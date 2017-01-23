@@ -3,11 +3,11 @@ package com.example.overdo.geoinfocollecter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -22,7 +22,6 @@ import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.yalantis.guillotine.animation.GuillotineAnimation;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,13 +31,8 @@ import butterknife.InjectView;
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
 
-
-    @InjectView(R.id.toolbar)
-    Toolbar mToolbar;
-    @InjectView(R.id.root)
-    RelativeLayout mRoot;
-    @InjectView(R.id.content_hamburger)
-    View mContentHamburger;
+    @InjectView(R.id.coordinatorlayout)
+    CoordinatorLayout mCoordinatorlayout;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -50,8 +44,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
+    private TranslateAnimation mShowAction;
+    private TranslateAnimation mHiddenAction;
 
-    private static final long RIPPLE_DURATION = 250;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,26 +54,13 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);// 此方法必须重写
 
         initMap();
-
-
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-            getSupportActionBar().setTitle(null);
-        }
-
-        View guillotineMenu = LayoutInflater.from(this).inflate(R.layout.guillotine, null);
-        mRoot.addView(guillotineMenu);
-
-        new GuillotineAnimation.GuillotineBuilder(guillotineMenu,
-                guillotineMenu.findViewById(R.id.guillotine_hamburger), mContentHamburger)
-                .setStartDelay(RIPPLE_DURATION)
-                .setActionBarViewForAnimation(mToolbar)
-                .setClosedOnStart(true)
-                .build();
+        initAnimation();
+        initMapClickListener();
     }
 
 
@@ -116,6 +98,49 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         // 将自定义的 myLocationStyle 对象添加到地图上
         mMap.setMyLocationStyle(myLocationStyle);
 
+
+    }
+
+    /**
+     * 初始化地图点击事件
+     */
+    private void initMapClickListener() {
+
+        mMap.setOnMapClickListener(new AMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if (mCoordinatorlayout.getVisibility() == View.VISIBLE) {
+                    mCoordinatorlayout.startAnimation(mHiddenAction);
+                    mCoordinatorlayout.setVisibility(View.GONE);
+                }else {
+                    mCoordinatorlayout.startAnimation(mShowAction);
+                    mCoordinatorlayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mMap.setOnMapLongClickListener(new AMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+
+            }
+        });
+    }
+
+    /**
+     * 初始化进出场动画
+     */
+    private void initAnimation(){
+        mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        mShowAction.setDuration(500);
+
+        mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
+                0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f);
+        mHiddenAction.setDuration(500);
 
     }
 
