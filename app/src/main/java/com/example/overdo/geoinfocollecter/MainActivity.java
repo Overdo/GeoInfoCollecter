@@ -1,6 +1,7 @@
 package com.example.overdo.geoinfocollecter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -31,15 +34,25 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkRouteResult;
+import com.example.overdo.geoinfocollecter.activities.BaseActivity;
+import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * create by Overdo in 2017/01/23
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
-        GeocodeSearch.OnGeocodeSearchListener,AMap.OnMarkerClickListener {
+        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener, RouteSearch.OnRouteSearchListener {
 
     @InjectView(R.id.coordinatorlayout)
     CoordinatorLayout mCoordinatorlayout;
@@ -47,6 +60,16 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     TextView mTvLocationTitle;
     @InjectView(R.id.tv_location_detail)
     TextView mTvLocationDetail;
+    @InjectView(R.id.action_go_there)
+    ImageButton mActionGoThere;
+    @InjectView(R.id.action_setting)
+    FloatingActionButton mActionSetting;
+    @InjectView(R.id.action_about)
+    FloatingActionButton mActionAbout;
+    @InjectView(R.id.multiple_actions)
+    FloatingActionsMenu mMultipleActions;
+    @InjectView(R.id.root)
+    RelativeLayout mRoot;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -64,6 +87,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private GeocodeSearch geocoderSearch;
     private String addressName;
+
+    private LatLonPoint mStartPoint = new LatLonPoint(39.942295, 116.335891);//起点，39.942295,116.335891
+    private LatLonPoint mEndPoint = new LatLonPoint(39.995576, 116.481288);//终点，39.995576,116.481288
+    private RouteSearch mRouteSearch;
+    private DriveRouteResult mDriveRouteResult;
 
 
     @Override
@@ -121,8 +149,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMap.setOnMarkerClickListener(this);
 
 
-        //初始化地理编码
-        if(geocoderSearch ==null){
+        //初始化地理编码/逆地理编码
+        if (geocoderSearch == null) {
             geocoderSearch = new GeocodeSearch(this);
         }
         geocoderSearch.setOnGeocodeSearchListener(this);
@@ -162,7 +190,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     mCoordinatorlayout.startAnimation(mShowAction);
                     mCoordinatorlayout.setVisibility(View.VISIBLE);
                 }
-                getAddress(new LatLonPoint(latLng.latitude,latLng.longitude));
+                getAddress(new LatLonPoint(latLng.latitude, latLng.longitude));
 
             }
         });
@@ -202,9 +230,14 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
+    /**
+     * 地理编码回掉
+     *
+     * @param geocodeResult
+     * @param rCode
+     */
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int rCode) {
-
     }
 
 
@@ -224,6 +257,27 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mHiddenAction.setDuration(500);
 
     }
+
+
+    /**
+     * 开始搜索驾车路径规划方案
+     */
+    public void searchRouteResult(int mode) {
+        if (mStartPoint == null) {
+            showToast("定位中，稍后再试...");
+            return;
+        }
+        if (mEndPoint == null) {
+            showToast("终点未设置");
+        }
+
+        final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
+                mStartPoint, mEndPoint);
+        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, mode, null,
+                null, "");// 第一个参数表示路径规划的起点和终点，第二个参数表示驾车模式，第三个参数表示途经点，第四个参数表示避让区域，第五个参数表示避让道路
+        mRouteSearch.calculateDriveRouteAsyn(query);// 异步路径规划驾车模式查询
+    }
+
 
     /**
      * 定位信息回调函数
@@ -349,8 +403,42 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 mCoordinatorlayout.startAnimation(mShowAction);
                 mCoordinatorlayout.setVisibility(View.VISIBLE);
             }
-            mTvLocationDetail.setText(marker.getGeoPoint().toString());
+
+            getAddress(new LatLonPoint(marker.getPosition().latitude, marker.getPosition().longitude));
+
+            mTvLocationDetail.setText(marker.getPosition().toString());
         }
         return true;
+    }
+
+    @Override
+    public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
+
+    }
+
+    @Override
+    public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
+
+    }
+
+    @OnClick({R.id.action_go_there, R.id.action_setting})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.action_go_there:
+                startActivity(new Intent(MainActivity.this, DriveRouteActivity.class));
+                break;
+            case R.id.action_setting:
+                break;
+        }
     }
 }

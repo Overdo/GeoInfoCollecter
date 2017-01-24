@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 
+import org.litepal.LitePal;
+
 /**
  * Created by Overdo on 2017/1/23.
  */
@@ -18,17 +20,12 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LitePal.initialize(this);
         context = getApplicationContext();
-        initTypeface();
     }
 
     public static Context getContext() {
         return context;
-    }
-
-    private void initTypeface() {
-        canaroExtraBold = Typeface.createFromAsset(getAssets(), CANARO_EXTRA_BOLD_PATH);
-
     }
 
 }

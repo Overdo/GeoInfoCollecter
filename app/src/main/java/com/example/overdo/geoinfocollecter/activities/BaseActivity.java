@@ -1,4 +1,4 @@
-package com.example.overdo.geoinfocollecter;
+package com.example.overdo.geoinfocollecter.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
