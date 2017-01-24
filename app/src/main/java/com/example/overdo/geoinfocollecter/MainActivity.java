@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -21,7 +22,15 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -29,10 +38,15 @@ import butterknife.InjectView;
 /**
  * create by Overdo in 2017/01/23
  */
-public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener {
+public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
+        GeocodeSearch.OnGeocodeSearchListener,AMap.OnMarkerClickListener {
 
     @InjectView(R.id.coordinatorlayout)
     CoordinatorLayout mCoordinatorlayout;
+    @InjectView(R.id.tv_location_title)
+    TextView mTvLocationTitle;
+    @InjectView(R.id.tv_location_detail)
+    TextView mTvLocationDetail;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -42,10 +56,14 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private OnLocationChangedListener mListener;
     private boolean isFirstIn = true;
 
+    private static final String TAG = "MainActivity";
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
     private TranslateAnimation mShowAction;
     private TranslateAnimation mHiddenAction;
+
+    private GeocodeSearch geocoderSearch;
+    private String addressName;
 
 
     @Override
@@ -99,6 +117,15 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMap.setMyLocationStyle(myLocationStyle);
 
 
+        //初始化marker点击回调
+        mMap.setOnMarkerClickListener(this);
+
+
+        //初始化地理编码
+        if(geocoderSearch ==null){
+            geocoderSearch = new GeocodeSearch(this);
+        }
+        geocoderSearch.setOnGeocodeSearchListener(this);
     }
 
     /**
@@ -112,7 +139,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 if (mCoordinatorlayout.getVisibility() == View.VISIBLE) {
                     mCoordinatorlayout.startAnimation(mHiddenAction);
                     mCoordinatorlayout.setVisibility(View.GONE);
-                }else {
+                } else {
                     mCoordinatorlayout.startAnimation(mShowAction);
                     mCoordinatorlayout.setVisibility(View.VISIBLE);
                 }
@@ -122,15 +149,69 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMap.setOnMapLongClickListener(new AMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                //添加marker
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        .position(latLng)
+                        .draggable(true));
+
+                mTvLocationTitle.setText("获取详细地址中");
+                mTvLocationDetail.setText(latLng.toString());
+
+                if (mCoordinatorlayout.getVisibility() == View.GONE) {
+                    mCoordinatorlayout.startAnimation(mShowAction);
+                    mCoordinatorlayout.setVisibility(View.VISIBLE);
+                }
+                getAddress(new LatLonPoint(latLng.latitude,latLng.longitude));
 
             }
         });
     }
 
+
+    /**
+     * 逆地理编码
+     */
+    public void getAddress(final LatLonPoint latLonPoint) {
+
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,
+                GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        geocoderSearch.getFromLocationAsyn(query);// 设置异步逆地理编码请求
+    }
+
+
+    /**
+     * 逆地理编码回调
+     */
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int rCode) {
+        if (rCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (regeocodeResult != null && regeocodeResult.getRegeocodeAddress() != null
+                    && regeocodeResult.getRegeocodeAddress().getFormatAddress() != null) {
+                addressName = regeocodeResult.getRegeocodeAddress().getFormatAddress()
+                        + "附近";
+                mTvLocationTitle.setText(addressName);
+                Log.d(TAG, "onRegeocodeSearched: " + addressName);
+            } else {
+                mTvLocationTitle.setText("无法获取到详细地名");
+
+            }
+        } else {
+
+            mTvLocationTitle.setText("无法获取到详细地名");
+        }
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int rCode) {
+
+    }
+
+
     /**
      * 初始化进出场动画
      */
-    private void initAnimation(){
+    private void initAnimation() {
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
                 Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
                 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
@@ -255,4 +336,21 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
+    /**
+     * marcker点击事件监听回调
+     *
+     * @param marker
+     * @return
+     */
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (marker != null) {
+            if (mCoordinatorlayout.getVisibility() == View.GONE) {
+                mCoordinatorlayout.startAnimation(mShowAction);
+                mCoordinatorlayout.setVisibility(View.VISIBLE);
+            }
+            mTvLocationDetail.setText(marker.getGeoPoint().toString());
+        }
+        return true;
+    }
 }
