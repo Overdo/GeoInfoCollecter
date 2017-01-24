@@ -34,11 +34,6 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.amap.api.services.route.BusRouteResult;
-import com.amap.api.services.route.DriveRouteResult;
-import com.amap.api.services.route.RideRouteResult;
-import com.amap.api.services.route.RouteSearch;
-import com.amap.api.services.route.WalkRouteResult;
 import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -52,7 +47,7 @@ import butterknife.OnClick;
  * create by Overdo in 2017/01/23
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
-        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener, RouteSearch.OnRouteSearchListener {
+        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener{
 
     @InjectView(R.id.coordinatorlayout)
     CoordinatorLayout mCoordinatorlayout;
@@ -87,12 +82,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private GeocodeSearch geocoderSearch;
     private String addressName;
-
-    private LatLonPoint mStartPoint = new LatLonPoint(39.942295, 116.335891);//起点，39.942295,116.335891
-    private LatLonPoint mEndPoint = new LatLonPoint(39.995576, 116.481288);//终点，39.995576,116.481288
-    private RouteSearch mRouteSearch;
-    private DriveRouteResult mDriveRouteResult;
-
+    private LatLonPoint mCurrentPoint;
+    private LatLonPoint aimPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +181,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     mCoordinatorlayout.startAnimation(mShowAction);
                     mCoordinatorlayout.setVisibility(View.VISIBLE);
                 }
-                getAddress(new LatLonPoint(latLng.latitude, latLng.longitude));
+                aimPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
+                getAddress(aimPoint);
 
             }
         });
@@ -259,24 +251,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    /**
-     * 开始搜索驾车路径规划方案
-     */
-    public void searchRouteResult(int mode) {
-        if (mStartPoint == null) {
-            showToast("定位中，稍后再试...");
-            return;
-        }
-        if (mEndPoint == null) {
-            showToast("终点未设置");
-        }
-
-        final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
-                mStartPoint, mEndPoint);
-        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, mode, null,
-                null, "");// 第一个参数表示路径规划的起点和终点，第二个参数表示驾车模式，第三个参数表示途经点，第四个参数表示避让区域，第五个参数表示避让道路
-        mRouteSearch.calculateDriveRouteAsyn(query);// 异步路径规划驾车模式查询
-    }
 
 
     /**
@@ -292,17 +266,17 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     && aMapLocation.getErrorCode() == 0) {
                 LatLng location = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
 
+                mCurrentPoint = new LatLonPoint(aMapLocation.getLatitude(),aMapLocation.getLongitude());
+
                 //第一次进入定位
                 if (isFirstIn) {
                     isFirstIn = false;
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
                 }
 
-
             } else {
                 String errText = "定位失败," + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
-
             }
         }
     }
@@ -404,38 +378,25 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 mCoordinatorlayout.setVisibility(View.VISIBLE);
             }
 
-            getAddress(new LatLonPoint(marker.getPosition().latitude, marker.getPosition().longitude));
+            //目标点
+            aimPoint = new LatLonPoint(marker.getPosition().latitude, marker.getPosition().longitude);
+            getAddress(aimPoint);
+
 
             mTvLocationDetail.setText(marker.getPosition().toString());
         }
         return true;
     }
 
-    @Override
-    public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
-
-    }
-
-    @Override
-    public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
-
-    }
-
-    @Override
-    public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
-
-    }
-
-    @Override
-    public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
-
-    }
 
     @OnClick({R.id.action_go_there, R.id.action_setting})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_go_there:
-                startActivity(new Intent(MainActivity.this, DriveRouteActivity.class));
+                Intent intent = new Intent(MainActivity.this, DriveRouteActivity.class);
+                intent.putExtra("start_point",mCurrentPoint);
+                intent.putExtra("aim_point",aimPoint);
+                startActivity(intent);
                 break;
             case R.id.action_setting:
                 break;

@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.overdo.geoinfocollecter.MainActivity">
 
-
     <com.amap.api.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
@@ -17,6 +16,7 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorlayout"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="match_parent">
 
         <LinearLayout

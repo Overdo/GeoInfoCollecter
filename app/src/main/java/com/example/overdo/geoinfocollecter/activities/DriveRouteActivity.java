@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,29 +43,39 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	private Context mContext;
 	private RouteSearch mRouteSearch;
 	private DriveRouteResult mDriveRouteResult;
-	private LatLonPoint mStartPoint = new LatLonPoint(39.942295,116.335891);//起点，39.942295,116.335891
-	private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);//终点，39.995576,116.481288
-	
+	private LatLonPoint mStartPoint ;
+	private LatLonPoint mEndPoint ;
+
 	private final int ROUTE_TYPE_DRIVE = 2;
 	
 	private RelativeLayout mBottomLayout, mHeadLayout;
 	private TextView mRotueTimeDes, mRouteDetailDes;
 	private ProgressDialog progDialog = null;// 搜索时进度条
-	private Toolbar toolbar;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.route_activity);
 		
 		mContext = this.getApplicationContext();
 		mapView = (MapView) findViewById(R.id.route_map);
 		mapView.onCreate(bundle);// 此方法必须重写
 		init();
+		getIntentData();
 		setfromandtoMarker();
 		searchRouteResult(ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
 
 
+	}
+
+	private void getIntentData() {
+		Intent intent = getIntent();
+		if (intent == null) {
+			return;
+		}
+		mStartPoint = intent.getParcelableExtra("start_point");
+		mEndPoint = intent.getParcelableExtra("aim_point");
 	}
 
 	private void setfromandtoMarker() {
@@ -89,10 +99,9 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 		mRouteSearch = new RouteSearch(this);
 		mRouteSearch.setRouteSearchListener(this);
 		mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
-		mHeadLayout = (RelativeLayout)findViewById(R.id.routemap_header);
 		mRotueTimeDes = (TextView) findViewById(R.id.firstline);
 		mRouteDetailDes = (TextView) findViewById(R.id.secondline);
-		mHeadLayout.setVisibility(View.GONE);
+
 	}
 
 	/**
