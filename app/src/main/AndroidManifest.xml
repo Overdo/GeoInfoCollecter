@@ -54,7 +54,7 @@
         <activity android:name=".activities.DriveRouteActivity"
             android:theme="@style/AppTheme"/>
         <activity android:name=".activities.DriveRouteDetailActivity"/>
-
+        <activity android:name=".activities.PointDetailActivity"/>
     </application>
 
 </manifest>

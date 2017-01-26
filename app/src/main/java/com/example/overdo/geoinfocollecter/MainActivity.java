@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,8 +37,13 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
+import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
+import com.example.overdo.geoinfocollecter.entities.GeoInfo;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,7 +53,8 @@ import butterknife.OnClick;
  * create by Overdo in 2017/01/23
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
-        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener{
+        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
+
 
     @InjectView(R.id.coordinatorlayout)
     CoordinatorLayout mCoordinatorlayout;
@@ -65,6 +72,16 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     FloatingActionsMenu mMultipleActions;
     @InjectView(R.id.root)
     RelativeLayout mRoot;
+    @InjectView(R.id.btn_collect)
+    Button mBtnCollect;
+    @InjectView(R.id.action_data_collect)
+    FloatingActionButton mActionDataCollect;
+    @InjectView(R.id.action_data_distribute)
+    FloatingActionButton mActionDataDistribute;
+    @InjectView(R.id.action_data_manager)
+    FloatingActionButton mActionDataManager;
+    @InjectView(R.id.action_tools)
+    FloatingActionButton mActionTools;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -84,6 +101,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private String addressName;
     private LatLonPoint mCurrentPoint;
     private LatLonPoint aimPoint;
+    private double mCurrentElevation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +203,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 aimPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
                 getAddress(aimPoint);
 
+
             }
         });
     }
@@ -206,6 +226,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int rCode) {
         if (rCode == AMapException.CODE_AMAP_SUCCESS) {
+            Log.d(TAG, "onRegeocodeSearched: " + regeocodeResult.getRegeocodeAddress().getTowncode());
+
             if (regeocodeResult != null && regeocodeResult.getRegeocodeAddress() != null
                     && regeocodeResult.getRegeocodeAddress().getFormatAddress() != null) {
                 addressName = regeocodeResult.getRegeocodeAddress().getFormatAddress()
@@ -251,8 +273,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-
-
     /**
      * 定位信息回调函数
      *
@@ -266,13 +286,15 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     && aMapLocation.getErrorCode() == 0) {
                 LatLng location = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
 
-                mCurrentPoint = new LatLonPoint(aMapLocation.getLatitude(),aMapLocation.getLongitude());
+                mCurrentPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                mCurrentElevation = aMapLocation.getAltitude();
 
                 //第一次进入定位
                 if (isFirstIn) {
                     isFirstIn = false;
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
                 }
+
 
             } else {
                 String errText = "定位失败," + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo();
@@ -385,21 +407,41 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
             mTvLocationDetail.setText(marker.getPosition().toString());
         }
+
         return true;
     }
 
 
-    @OnClick({R.id.action_go_there, R.id.action_setting})
+    @OnClick({R.id.action_go_there, R.id.action_setting, R.id.btn_collect})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_go_there:
-                Intent intent = new Intent(MainActivity.this, DriveRouteActivity.class);
-                intent.putExtra("start_point",mCurrentPoint);
-                intent.putExtra("aim_point",aimPoint);
-                startActivity(intent);
+                Intent intent1 = new Intent(MainActivity.this, DriveRouteActivity.class);
+                intent1.putExtra("start_point", mCurrentPoint);
+                intent1.putExtra("aim_point", aimPoint);
+                startActivity(intent1);
                 break;
-            case R.id.action_setting:
+            case R.id.btn_collect:
+                GeoInfo geoinfo = new GeoInfo();
+
+                Date d = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String dateNowStr = sdf.format(d);
+
+                geoinfo.setDate(dateNowStr);
+                geoinfo.setAddress(addressName);
+                geoinfo.setLatitude(aimPoint.getLatitude());
+                geoinfo.setLongtitude(aimPoint.getLongitude());
+                geoinfo.setElevation(mCurrentElevation);
+
+                Intent intent2 = new Intent(MainActivity.this, PointDetailActivity.class);
+                intent2.putExtra("geo_info", geoinfo);
+                startActivity(intent2);
+
                 break;
+
         }
     }
+
+
 }

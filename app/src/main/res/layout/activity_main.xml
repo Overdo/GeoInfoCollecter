@@ -16,8 +16,8 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorlayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,27 +47,30 @@
                         android:layout_marginTop="10dp"
                         android:text="这里设置地理信息"/>
 
+
                     <LinearLayout
 
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/tv_location_detail"
                             android:layout_width="0dp"
+                            android:layout_weight="4"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:layout_weight="3"
+                            android:layout_marginLeft="10dp"
                             android:text="这里设置经纬度"/>
 
                         <Button
-                            android:id="@+id/btn_detail"
+                            android:id="@+id/btn_collect"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/selector_collect"
-                            android:text="采集这点"/>
+                            android:background="@null"
+                            android:text="采集"
+                            android:textColor="@color/blue800"/>
 
                     </LinearLayout>
                 </LinearLayout>
