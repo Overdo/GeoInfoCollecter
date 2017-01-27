@@ -142,11 +142,13 @@
                 android:textSize="20sp"/>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_photoes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"/>
 
             <ImageButton
+                android:id="@+id/ibtn_add_photo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -170,11 +172,13 @@
 
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_pics"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"/>
 
             <ImageButton
+                android:id="@+id/ibtn_add_pic"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -189,12 +193,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="取消"/>
 
             <Button
+                android:id="@+id/btn_confirm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
