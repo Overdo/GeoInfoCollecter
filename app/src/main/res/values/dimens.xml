@@ -28,4 +28,6 @@
     <dimen name="margin_padding">15dp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="trace_spinner_padding">2dp</dimen>
+
+    <dimen name="actionBarSize">32dip</dimen>
 </resources>

@@ -147,12 +147,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5"/>
 
-            <ImageButton
-                android:id="@+id/ibtn_add_photo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_add_grey_700_24dp"/>
         </LinearLayout>
 
         <LinearLayout

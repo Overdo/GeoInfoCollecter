@@ -26,6 +26,16 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!--改变wifi状态-->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
         android:name=".App"
@@ -51,10 +61,24 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.BaseActivity"/>
-        <activity android:name=".activities.DriveRouteActivity"
+        <activity
+            android:name=".activities.DriveRouteActivity"
             android:theme="@style/AppTheme"/>
         <activity android:name=".activities.DriveRouteDetailActivity"/>
         <activity android:name=".activities.PointDetailActivity"/>
+
+        <activity
+            android:name="me.iwf.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="423ff17515038a50c41085cc2dbd0087d2e51cbb"/>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
     </application>
 
 </manifest>
