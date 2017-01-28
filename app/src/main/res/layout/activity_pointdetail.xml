@@ -9,29 +9,70 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_charger"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="项目负责人：13243"
-            android:textSize="20sp"/>
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_collector"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="记录人：112"
-            android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="项目负责人："
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/tv_date"
+            <TextView
+                android:id="@+id/tv_charger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="ggg"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="日期：2017年1月26日"
-            android:textSize="20sp"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="记录人："
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/tv_collector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="asdmasldjkn"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="日期："
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="2017年1月28日"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -134,49 +175,24 @@
 
             <TextView
                 android:id="@+id/tv_photo"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="2"
                 android:text="相片："
                 android:textSize="20sp"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_photoes"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_pic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="2"
-                android:text="示意图："
-                android:textSize="20sp"/>
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_pics"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <ImageButton
-                android:id="@+id/ibtn_add_pic"
-                android:layout_width="0dp"
+                android:id="@+id/ibtn_add_photo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:background="@null"
                 android:src="@drawable/ic_add_grey_700_24dp"/>
+
 
         </LinearLayout>
 

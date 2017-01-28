@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -114,9 +115,24 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);// 此方法必须重写
 
+        initToolbar();
         initMap();
         initAnimation();
         initMapClickListener();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Toolbar/ActionBar");
+        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 

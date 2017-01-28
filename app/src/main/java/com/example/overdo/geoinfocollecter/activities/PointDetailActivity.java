@@ -45,12 +45,12 @@ public class PointDetailActivity extends BaseActivity {
     TextView mTvLat;
     @InjectView(R.id.tv_lng)
     TextView mTvLng;
-    @InjectView(R.id.ibtn_add_pic)
-    ImageButton mIbtnAddPic;
     @InjectView(R.id.btn_cancel)
     Button mBtnCancel;
     @InjectView(R.id.btn_confirm)
     Button mBtnConfirm;
+    @InjectView(R.id.ibtn_add_photo)
+    ImageButton mIbtnAddPhoto;
     private GeoInfo mGeoInfo;
 
 
@@ -65,7 +65,6 @@ public class PointDetailActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         getIntentData();
-        initRecyclerView();
     }
 
     private void getIntentData() {
@@ -74,7 +73,7 @@ public class PointDetailActivity extends BaseActivity {
             return;
         }
         mGeoInfo = (GeoInfo) intent.getSerializableExtra("geo_info");
-        mTvDate.setText("日期：" + mGeoInfo.getDate());
+        mTvDate.setText(mGeoInfo.getDate());
         mTvLocation.setText("地址：" + mGeoInfo.getAddress());
         mTvLat.setText("latitude：" + mGeoInfo.getLatitude());
         mTvLng.setText("longtitude：" + mGeoInfo.getLongtitude());
@@ -82,10 +81,12 @@ public class PointDetailActivity extends BaseActivity {
 
     }
 
-    @OnClick({ R.id.ibtn_add_pic, R.id.btn_cancel, R.id.btn_confirm})
+    @OnClick({R.id.btn_cancel, R.id.btn_confirm,R.id.ibtn_add_photo})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ibtn_add_pic:
+            case R.id.ibtn_add_photo:
+                initRecyclerView();
+                mIbtnAddPhoto.setVisibility(View.GONE);
                 break;
             case R.id.btn_cancel:
                 finish();
@@ -96,7 +97,7 @@ public class PointDetailActivity extends BaseActivity {
         }
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
 
         PhotoPicker.builder()
                 .setPhotoCount(9)
@@ -130,7 +131,6 @@ public class PointDetailActivity extends BaseActivity {
                         }
                     }
                 }));
-
     }
 
     @Override
@@ -152,4 +152,5 @@ public class PointDetailActivity extends BaseActivity {
             photoAdapter.notifyDataSetChanged();
         }
     }
+
 }
