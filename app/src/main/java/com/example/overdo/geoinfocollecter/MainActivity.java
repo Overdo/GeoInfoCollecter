@@ -40,8 +40,6 @@ import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
 import com.example.overdo.geoinfocollecter.entities.GeoInfo;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,24 +63,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     TextView mTvLocationDetail;
     @InjectView(R.id.action_go_there)
     ImageButton mActionGoThere;
-    @InjectView(R.id.action_setting)
-    FloatingActionButton mActionSetting;
-    @InjectView(R.id.action_about)
-    FloatingActionButton mActionAbout;
-    @InjectView(R.id.multiple_actions)
-    FloatingActionsMenu mMultipleActions;
     @InjectView(R.id.root)
     RelativeLayout mRoot;
     @InjectView(R.id.btn_collect)
     Button mBtnCollect;
-    @InjectView(R.id.action_data_collect)
-    FloatingActionButton mActionDataCollect;
-    @InjectView(R.id.action_data_distribute)
-    FloatingActionButton mActionDataDistribute;
-    @InjectView(R.id.action_data_manager)
-    FloatingActionButton mActionDataManager;
-    @InjectView(R.id.action_tools)
-    FloatingActionButton mActionTools;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -428,7 +412,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
-    @OnClick({R.id.action_go_there, R.id.action_setting, R.id.btn_collect})
+    @OnClick({R.id.action_go_there, R.id.btn_collect})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_go_there:

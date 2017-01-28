@@ -109,73 +109,6 @@
                     app:layout_anchorGravity="end|top"/>
             </android.support.design.widget.CoordinatorLayout>
 
-            <com.getbase.floatingactionbutton.FloatingActionsMenu
-                android:id="@+id/multiple_actions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginBottom="66dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="8dp"
-                app:fab_addButtonColorNormal="@color/white"
-                app:fab_addButtonColorPressed="@color/white_pressed"
-                app:fab_addButtonPlusIconColor="@color/half_black"
-                app:fab_labelStyle="@style/menu_labels_style"
-                app:fab_labelsPosition="right">
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_data_collect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey200"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_title="数据采集"/>
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_data_distribute"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey100"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_size="mini"
-                    app:fab_title="数据分布"/>
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_data_manager"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey200"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_title="数据管理"/>
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_tools"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey300"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_size="mini"
-                    app:fab_title="工具"/>
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey200"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_title="设置"/>
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_about"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/grey100"
-                    app:fab_colorPressed="@color/white_pressed"
-                    app:fab_size="mini"
-                    app:fab_title="关于"/>
-
-            </com.getbase.floatingactionbutton.FloatingActionsMenu>
         </RelativeLayout>
     </LinearLayout>
 
@@ -184,5 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer"/>
 </android.support.v4.widget.DrawerLayout>
