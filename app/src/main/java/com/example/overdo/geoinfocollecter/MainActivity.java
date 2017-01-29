@@ -439,7 +439,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 Intent intent1 = new Intent(MainActivity.this, DriveRouteActivity.class);
                 intent1.putExtra("start_point", mCurrentPoint);
                 intent1.putExtra("aim_point", aimPoint);
-                startActivity(intent1);
+                if (aimPoint != null) {
+                    startActivity(intent1);
+                } else {
+                    showToast("长按选定目标点");
+                }
                 break;
             case R.id.btn_collect:
                 GeoInfo geoinfo = new GeoInfo();
@@ -459,7 +463,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 startActivity(intent2);
 
                 break;
-
         }
     }
 
@@ -477,7 +480,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 break;
             case R.id.nav_setting:
                 intentToClass(SettingActivity.class);
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.nav_about:
                 intentToClass(AboutActivity.class);
@@ -492,15 +494,22 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     }
 
 
+    /**
+     * 再按一次退出功能
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 
-            if(mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 return true;
             }
-            if((System.currentTimeMillis()-exitTime) > 2000){
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
                 Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
