@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -36,9 +41,11 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.example.overdo.geoinfocollecter.activities.AboutActivity;
 import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
+import com.example.overdo.geoinfocollecter.activities.SettingActivity;
 import com.example.overdo.geoinfocollecter.entities.GeoInfo;
 
 import java.text.SimpleDateFormat;
@@ -52,7 +59,7 @@ import butterknife.OnClick;
  * create by Overdo in 2017/01/23
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
-        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
+        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener, NavigationView.OnNavigationItemSelectedListener {
 
 
     @InjectView(R.id.coordinatorlayout)
@@ -67,6 +74,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     RelativeLayout mRoot;
     @InjectView(R.id.btn_collect)
     Button mBtnCollect;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @InjectView(R.id.nav_view)
+    NavigationView mNavView;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -87,6 +98,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private LatLonPoint mCurrentPoint;
     private LatLonPoint aimPoint;
     private double mCurrentElevation;
+    private int mapType;
 
 
     @Override
@@ -99,24 +111,26 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);// 此方法必须重写
 
-        initToolbar();
+        initToolbarAndNavigationView();
         initMap();
         initAnimation();
         initMapClickListener();
     }
 
-    private void initToolbar() {
+    private void initToolbarAndNavigationView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Toolbar/ActionBar");
+        getSupportActionBar().setTitle("天网弹道跟踪系统");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+
+        mNavView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -139,6 +153,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
         mMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
 
+        mapType = getMapModeConfig("map_mode");
+        mMap.setMapType(mapType);
 
         // 自定义系统定位蓝点
         MyLocationStyle myLocationStyle = new MyLocationStyle();
@@ -202,8 +218,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 }
                 aimPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
                 getAddress(aimPoint);
-
-
             }
         });
     }
@@ -349,6 +363,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
+        mapType = getMapModeConfig("map_mode");
+        mMap.setMapType(mapType);
+
     }
 
     /**
@@ -443,5 +460,32 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_data_collect:
+                break;
+            case R.id.nav_data_distribute:
+                break;
+            case R.id.nav_data_manager:
+                break;
+            case R.id.nav_tools:
+                break;
+            case R.id.nav_setting:
+                intentToClass(SettingActivity.class);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.nav_about:
+                intentToClass(AboutActivity.class);
+                break;
+        }
+        return true;
+    }
+
+
+    private void intentToClass(Class object) {
+        startActivity(new Intent(MainActivity.this, object));
+    }
 
 }

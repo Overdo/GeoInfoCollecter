@@ -32,10 +32,10 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:required="false"/>
 
     <application
         android:name=".App"
@@ -75,9 +75,13 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="423ff17515038a50c41085cc2dbd0087d2e51cbb"/>
+
         <activity
             android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".activities.AboutActivity"/>
+        <activity android:name=".activities.SettingActivity"/>
 
     </application>
 
