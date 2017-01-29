@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -99,6 +101,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private LatLonPoint aimPoint;
     private double mCurrentElevation;
     private int mapType;
+    private long exitTime = 0;
 
 
     @Override
@@ -486,6 +489,27 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private void intentToClass(Class object) {
         startActivity(new Intent(MainActivity.this, object));
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+
+            if(mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            }
+            if((System.currentTimeMillis()-exitTime) > 2000){
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

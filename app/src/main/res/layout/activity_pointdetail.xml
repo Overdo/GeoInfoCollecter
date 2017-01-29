@@ -9,6 +9,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/appbar"/>
+        </android.support.design.widget.AppBarLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +51,7 @@
                 android:layout_margin="5dp"
                 android:text="记录人："
                 android:textSize="20sp"/>
+
             <TextView
                 android:id="@+id/tv_collector"
                 android:layout_width="wrap_content"
@@ -51,6 +61,7 @@
                 android:textSize="20sp"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +73,7 @@
                 android:layout_margin="5dp"
                 android:text="日期："
                 android:textSize="20sp"/>
+
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
@@ -71,7 +83,6 @@
                 android:textSize="20sp"/>
 
         </LinearLayout>
-
 
 
         <LinearLayout
