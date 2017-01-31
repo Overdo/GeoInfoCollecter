@@ -9,12 +9,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.PhotoAdapter;
-import com.example.overdo.geoinfocollecter.entities.GeoInfo;
+import com.example.overdo.geoinfocollecter.db.GeoInfo;
 import com.example.overdo.geoinfocollecter.listener.RecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -38,8 +39,6 @@ public class PointDetailActivity extends BaseActivity {
     TextView mTvCollector;
     @InjectView(R.id.tv_date)
     TextView mTvDate;
-    @InjectView(R.id.tv_code)
-    TextView mTvCode;
     @InjectView(R.id.tv_location)
     TextView mTvLocation;
     @InjectView(R.id.tv_lat)
@@ -48,11 +47,13 @@ public class PointDetailActivity extends BaseActivity {
     TextView mTvLng;
     @InjectView(R.id.btn_cancel)
     Button mBtnCancel;
-    @InjectView(R.id.btn_confirm)
+    @InjectView(R.id.btn_confirm_save)
     Button mBtnConfirm;
     @InjectView(R.id.ibtn_add_photo)
     ImageButton mIbtnAddPhoto;
-    private GeoInfo mGeoInfo;
+    @InjectView(R.id.tv_code)
+    EditText mTvCode;
+    private GeoInfo intentData;
 
 
     private PhotoAdapter photoAdapter;
@@ -87,16 +88,17 @@ public class PointDetailActivity extends BaseActivity {
         if (intent == null) {
             return;
         }
-        mGeoInfo = (GeoInfo) intent.getSerializableExtra("geo_info");
-        mTvDate.setText(mGeoInfo.getDate());
-        mTvLocation.setText("地址：" + mGeoInfo.getAddress());
-        mTvLat.setText("latitude：" + mGeoInfo.getLatitude());
-        mTvLng.setText("longtitude：" + mGeoInfo.getLongtitude());
-
+        intentData = (GeoInfo) intent.getSerializableExtra("geo_info");
+        mTvDate.setText(intentData.getDate());
+        mTvLocation.setText("地址：" + intentData.getAddress());
+        mTvLat.setText("latitude：" + intentData.getLatitude());
+        mTvLng.setText("longtitude：" + intentData.getLongtitude());
+        mTvCharger.setText(getProjectConfig("projection_charger"));
+        mTvCollector.setText(getProjectConfig("projection_collector"));
 
     }
 
-    @OnClick({R.id.btn_cancel, R.id.btn_confirm,R.id.ibtn_add_photo})
+    @OnClick({R.id.btn_cancel, R.id.btn_confirm_save, R.id.ibtn_add_photo})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ibtn_add_photo:
@@ -106,8 +108,24 @@ public class PointDetailActivity extends BaseActivity {
             case R.id.btn_cancel:
                 finish();
                 break;
-            case R.id.btn_confirm:
+            case R.id.btn_confirm_save:
                 //保存信息后finish
+
+                GeoInfo geoInfo = new GeoInfo();
+                geoInfo.setLatitude(intentData.getLatitude());
+                geoInfo.setAddress(intentData.getAddress());
+                geoInfo.setLongtitude(intentData.getLongtitude());
+                geoInfo.setDate(intentData.getDate());
+                geoInfo.setCode(mTvCode.getText().toString());
+
+
+                geoInfo.saveThrows();
+                if (geoInfo.isSaved()) {
+                    showToast("save succees");
+                } else {
+                    showToast("failed");
+                }
+
                 break;
         }
     }

@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CheckableImageButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.overdo.geoinfocollecter.App;
 import com.example.overdo.geoinfocollecter.R;
@@ -29,6 +31,12 @@ public class SettingActivity extends BaseActivity {
     CheckableImageButton mCibSatelite;
     @InjectView(R.id.cib_traffic)
     CheckableImageButton mCibTraffic;
+    @InjectView(R.id.et_charger)
+    EditText mEtCharger;
+    @InjectView(R.id.et_collector)
+    EditText mEtCollector;
+    @InjectView(R.id.btn_confirm_save)
+    Button mBtnConfirm;
     private SharedPreferences mConfig;
     private String mapMode;
 
@@ -39,7 +47,7 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         initToolbar();
-        initMapMode();
+        initMapModeAndConfig();
     }
 
     private void initToolbar() {
@@ -55,7 +63,7 @@ public class SettingActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.cib_normal, R.id.cib_satelite, R.id.cib_traffic})
+    @OnClick({R.id.cib_normal, R.id.cib_satelite, R.id.cib_traffic,R.id.btn_confirm_save})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cib_normal:
@@ -82,11 +90,18 @@ public class SettingActivity extends BaseActivity {
                 }
                 saveConfig("map_mode", TRAFFIC_MAP);
                 break;
+
+            case R.id.btn_confirm_save:
+                saveConfig("projection_charger",mEtCharger.getText().toString());
+                saveConfig("projection_collector",mEtCollector.getText().toString());
+                showToast("设置成功");
+                finish();
+                break;
         }
     }
 
 
-    private void initMapMode() {
+    private void initMapModeAndConfig() {
         if (mConfig == null) {
             mConfig = App.getContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
@@ -102,6 +117,8 @@ public class SettingActivity extends BaseActivity {
                 mCibTraffic.setChecked(true);
                 break;
         }
+        mEtCharger.setText(mConfig.getString("projection_charger",""));
+        mEtCollector.setText(mConfig.getString("projection_collector",""));
     }
 
 }

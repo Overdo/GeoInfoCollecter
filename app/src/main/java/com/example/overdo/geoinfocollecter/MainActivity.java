@@ -2,6 +2,7 @@ package com.example.overdo.geoinfocollecter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,7 +49,9 @@ import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
 import com.example.overdo.geoinfocollecter.activities.SettingActivity;
-import com.example.overdo.geoinfocollecter.entities.GeoInfo;
+import com.example.overdo.geoinfocollecter.db.GeoInfo;
+
+import org.litepal.LitePal;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -118,13 +121,15 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         initMap();
         initAnimation();
         initMapClickListener();
+
+        SQLiteDatabase db = LitePal.getDatabase();
     }
 
     private void initToolbarAndNavigationView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("天网弹道跟踪系统");
+        getSupportActionBar().setTitle("地理信息采集系统");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

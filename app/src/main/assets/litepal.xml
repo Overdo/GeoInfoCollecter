@@ -19,7 +19,7 @@
             For example:
         <version value="1" />
     -->
-    <version value="1"/>
+    <version value="6"/>
 
     <!--
         Define your models in the list with mapping tag, LitePal will
@@ -32,6 +32,9 @@
         </list>
     -->
     <list>
+        <mapping class="com.example.overdo.geoinfocollecter.db.GeoInfo"></mapping>
+        <mapping class="com.example.overdo.geoinfocollecter.db.Pic"></mapping>
+        <mapping class="com.example.overdo.geoinfocollecter.db.Projec"></mapping>
     </list>
 
     <!--
@@ -43,7 +46,7 @@
         can access. "internal" will act as default.
         For example:-->
 
-    <storage value="external"/>
+    <storage value="internal"/>
 
 
 </litepal>

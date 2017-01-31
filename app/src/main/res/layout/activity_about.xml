@@ -1,12 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:card_view="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimaryHome"
+              android:orientation="vertical"
+              android:padding="20dp">
 
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_devaccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardUseCompatPadding="true"
+        card_view:cardBackgroundColor="#A988BE"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="5dp"
+                android:text="Developed by"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/profile_image"
+                                                          xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                          android:layout_width="96dp"
+                                                          android:layout_height="96dp"
+                                                          android:layout_gravity="center"
+                                                          android:layout_margin="10dp"
+                                                          android:src="@drawable/oimage"
+                                                          app:civ_border_color="#ffffff"
+                                                          app:civ_border_width="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="5dp"
+                android:text="Overdo"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:id="@+id/iv_github"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_action_github"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="关于界面"
-        android:textSize="24sp"/>
+        android:background="@null"
+        android:gravity="center_horizontal"
+        android:textColor="@color/gary"
+        android:text="Click the icon to visit Github Repo"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_designpicks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp">
+
+    </android.support.v7.widget.CardView>
+
+
 </LinearLayout>
+

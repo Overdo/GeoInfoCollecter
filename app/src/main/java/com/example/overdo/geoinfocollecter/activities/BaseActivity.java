@@ -89,4 +89,12 @@ public class BaseActivity extends AppCompatActivity {
         }
         return AMap.MAP_TYPE_NORMAL;
     }
+
+    public String getProjectConfig(String configType) {
+        if (mConfig == null) {
+            mConfig = App.getContext().getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+
+        return mConfig.getString(configType,"");
+    }
 }
