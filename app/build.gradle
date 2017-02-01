@@ -40,4 +40,5 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.yydcdut.sdlv:sdlv:0.5.5@aar'
 }

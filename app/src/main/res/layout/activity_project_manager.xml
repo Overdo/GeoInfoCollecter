@@ -12,5 +12,17 @@
         <include layout="@layout/appbar"/>
     </android.support.design.widget.AppBarLayout>
 
+    <com.yydcdut.sdlv.SlideAndDragListView
+        android:id="@+id/lv_projects"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="30dp"
+        android:divider="@android:color/black"
+        android:dividerHeight="0.5dip"
+        android:listSelector="@drawable/list_selector"
+        android:paddingLeft="8dip"
+        android:paddingRight="8dip">
+        android:layout_height="fill_parent">
+    </com.yydcdut.sdlv.SlideAndDragListView>
 
 </LinearLayout>
