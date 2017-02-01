@@ -82,6 +82,7 @@
 
         <activity android:name=".activities.AboutActivity"/>
         <activity android:name=".activities.SettingActivity"/>
+        <activity android:name=".activities.ProjectManagerActivity"/>
 
     </application>
 

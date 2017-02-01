@@ -48,6 +48,7 @@ import com.example.overdo.geoinfocollecter.activities.AboutActivity;
 import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
+import com.example.overdo.geoinfocollecter.activities.ProjectManagerActivity;
 import com.example.overdo.geoinfocollecter.activities.SettingActivity;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
 
@@ -102,7 +103,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private String addressName;
     private LatLonPoint mCurrentPoint;
     private LatLonPoint aimPoint;
-    private double mCurrentElevation;
+    private String mCurrentElevation;
     private int mapType;
     private long exitTime = 0;
 
@@ -309,7 +310,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 LatLng location = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
 
                 mCurrentPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-                mCurrentElevation = aMapLocation.getAltitude();
+                mCurrentElevation = String.valueOf(aMapLocation.getAltitude());
 
                 //第一次进入定位
                 if (isFirstIn) {
@@ -465,7 +466,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
                 Intent intent2 = new Intent(MainActivity.this, PointDetailActivity.class);
                 intent2.putExtra("geo_info", geoinfo);
-                startActivity(intent2);
+
+                if (addressName != null) {
+                    startActivity(intent2);
+                } else {
+                    showToast("长按选定采集点");
+                }
 
                 break;
         }
@@ -480,6 +486,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case R.id.nav_data_distribute:
                 break;
             case R.id.nav_data_manager:
+                intentToClass(ProjectManagerActivity.class);
                 break;
             case R.id.nav_tools:
                 break;

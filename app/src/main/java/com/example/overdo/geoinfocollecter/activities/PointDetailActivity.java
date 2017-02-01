@@ -16,7 +16,10 @@ import android.widget.TextView;
 import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.PhotoAdapter;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
+import com.example.overdo.geoinfocollecter.db.Projec;
 import com.example.overdo.geoinfocollecter.listener.RecyclerItemClickListener;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +36,6 @@ import me.iwf.photopicker.PhotoPreview;
 
 public class PointDetailActivity extends BaseActivity {
 
-    @InjectView(R.id.tv_charger)
-    TextView mTvCharger;
-    @InjectView(R.id.tv_collector)
-    TextView mTvCollector;
     @InjectView(R.id.tv_date)
     TextView mTvDate;
     @InjectView(R.id.tv_location)
@@ -51,22 +50,36 @@ public class PointDetailActivity extends BaseActivity {
     Button mBtnConfirm;
     @InjectView(R.id.ibtn_add_photo)
     ImageButton mIbtnAddPhoto;
+    @InjectView(R.id.tv_project_name)
+    EditText mTvProjectName;
+    @InjectView(R.id.tv_charger)
+    EditText mTvLeader;
+    @InjectView(R.id.tv_collector)
+    EditText mTvCollector;
     @InjectView(R.id.tv_code)
     EditText mTvCode;
+    @InjectView(R.id.tv_height)
+    EditText mTvHeight;
+    @InjectView(R.id.tv_note)
+    EditText mTvNote;
     private GeoInfo intentData;
-
+    private static final String TAG = "PointDetailActivity";
 
     private PhotoAdapter photoAdapter;
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
+    private Projec mProjec;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pointdetail);
         ButterKnife.inject(this);
-        initToolbar();
+
         getIntentData();
+        initToolbar();
+        initEditext();
     }
 
 
@@ -93,7 +106,7 @@ public class PointDetailActivity extends BaseActivity {
         mTvLocation.setText("地址：" + intentData.getAddress());
         mTvLat.setText("latitude：" + intentData.getLatitude());
         mTvLng.setText("longtitude：" + intentData.getLongtitude());
-        mTvCharger.setText(getProjectConfig("projection_charger"));
+        mTvLeader.setText(getProjectConfig("projection_charger"));
         mTvCollector.setText(getProjectConfig("projection_collector"));
 
     }
@@ -109,23 +122,7 @@ public class PointDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_confirm_save:
-                //保存信息后finish
-
-                GeoInfo geoInfo = new GeoInfo();
-                geoInfo.setLatitude(intentData.getLatitude());
-                geoInfo.setAddress(intentData.getAddress());
-                geoInfo.setLongtitude(intentData.getLongtitude());
-                geoInfo.setDate(intentData.getDate());
-                geoInfo.setCode(mTvCode.getText().toString());
-
-
-                geoInfo.saveThrows();
-                if (geoInfo.isSaved()) {
-                    showToast("save succees");
-                } else {
-                    showToast("failed");
-                }
-
+                saveGeoInfos();
                 break;
         }
     }
@@ -164,6 +161,64 @@ public class PointDetailActivity extends BaseActivity {
                         }
                     }
                 }));
+    }
+
+    private void saveGeoInfos() {
+
+        //获取信息
+        String projectname = mTvProjectName.getText().toString();
+        String projectLeader = mTvLeader.getText().toString();
+        String projectCollefctor = mTvCollector.getText().toString();
+        String code = mTvCode.getText().toString();
+        String elevation = mTvHeight.getText().toString();
+        String note = mTvNote.getText().toString();
+
+        //保存信息
+        List<Projec> projecs = DataSupport.select("projectname").where("projectname = ?", projectname).find(Projec.class);
+
+        if (projecs.isEmpty()) {
+            mProjec = new Projec();
+            mProjec.setCollector(projectCollefctor);
+            mProjec.setLeader(projectLeader);
+            mProjec.setProjectname(projectname);
+            mProjec.saveThrows();
+
+        } else {
+            mProjec = projecs.get(0);
+            mProjec.setCollector(projectCollefctor);
+            mProjec.setLeader(projectLeader);
+            mProjec.setProjectname(projectname);
+        }
+        //地理信息
+        GeoInfo geoInfo = new GeoInfo();
+        geoInfo.setLatitude(intentData.getLatitude());
+        geoInfo.setAddress(intentData.getAddress());
+        geoInfo.setLongtitude(intentData.getLongtitude());
+        geoInfo.setDate(intentData.getDate());
+        geoInfo.setCode(code);
+        geoInfo.setElevation(elevation);
+        geoInfo.setNote(note);
+        mProjec.getInfos().add(geoInfo);
+
+        //图片信息 selectedPhotos
+        geoInfo.getPics().addAll(selectedPhotos);
+        mProjec.saveThrows();
+        geoInfo.saveThrows();
+        showToast("保存成功 ");
+    }
+
+    /**
+     * 初始化回显信息
+     * 初始化回显信息
+     */
+    private void initEditext() {
+
+        List<Projec> allProject = DataSupport.findAll(Projec.class);
+        if (!allProject.isEmpty()) {
+            mTvProjectName.setText(allProject.get(allProject.size() - 1).getProjectname());
+            mTvLeader.setText(allProject.get(allProject.size() - 1).getLeader());
+            mTvCollector.setText(allProject.get(allProject.size() - 1).getCollector());
+        }
     }
 
     @Override

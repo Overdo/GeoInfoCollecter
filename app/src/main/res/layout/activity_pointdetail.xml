@@ -16,6 +16,29 @@
 
             <include layout="@layout/appbar"/>
         </android.support.design.widget.AppBarLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="项目名称："
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/tv_project_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text=""
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
 
 
         <LinearLayout
@@ -30,12 +53,13 @@
                 android:text="项目负责人："
                 android:textSize="20sp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/tv_charger"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="ggg"
+                android:text=""
                 android:textSize="20sp"/>
 
         </LinearLayout>
@@ -52,9 +76,10 @@
                 android:text="记录人："
                 android:textSize="20sp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/tv_collector"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text=""

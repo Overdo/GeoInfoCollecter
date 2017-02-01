@@ -63,7 +63,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="60dp"
                                 android:layout_marginTop="10dp"
-                                android:text="这里设置地理信息"/>
+                                android:text="未选定目标点"/>
 
 
                             <LinearLayout
@@ -79,7 +79,7 @@
                                     android:layout_margin="10dp"
                                     android:layout_marginLeft="10dp"
                                     android:layout_weight="4"
-                                    android:text="这里设置经纬度"/>
+                                    android:text="未选定目标点"/>
 
                                 <Button
                                     android:id="@+id/btn_collect"

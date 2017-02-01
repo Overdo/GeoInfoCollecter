@@ -13,20 +13,42 @@ import java.util.List;
 public class Projec extends DataSupport implements Serializable {
 
 
+    private long id;
+
     private String leader;
     private String collector;
+    private String projectname;
+    private List<GeoInfo> infos = new ArrayList<>();
 
-    public String getProject_name() {
-        return project_name;
+
+    public long getId() {
+        return id;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    private String project_name;
+
+    public String getProjectname() {
+        return projectname;
+    }
+
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
+    }
+
+
+    public List<GeoInfo> getInfos() {
+        return infos;
+    }
+
+    public void setInfos(List<GeoInfo> infos) {
+        this.infos = infos;
+    }
 
     public String getLeader() {
+
         return leader;
     }
 
@@ -42,13 +64,4 @@ public class Projec extends DataSupport implements Serializable {
         this.collector = collector;
     }
 
-    private List<GeoInfo> projects = new ArrayList<GeoInfo>();
-
-    public List<GeoInfo> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<GeoInfo> projects) {
-        this.projects = projects;
-    }
 }

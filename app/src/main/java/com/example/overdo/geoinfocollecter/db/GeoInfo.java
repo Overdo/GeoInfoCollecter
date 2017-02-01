@@ -18,13 +18,11 @@ public class GeoInfo extends DataSupport implements Serializable {
     private String code;
     private double latitude;
     private double longtitude;
-    private double elevation;
+    private String elevation;
     private String address;
     private String date;
-
-
     private String note;
-    private List<Pic> pics = new ArrayList<>();
+    private List<String> pics = new ArrayList<>();
 
     public String getNote() {
         return note;
@@ -34,11 +32,11 @@ public class GeoInfo extends DataSupport implements Serializable {
         this.note = note;
     }
 
-    public List<Pic> getPics() {
+    public List<String> getPics() {
         return pics;
     }
 
-    public void setPics(List<Pic> pics) {
+    public void setPics(List<String> pics) {
         this.pics = pics;
     }
 
@@ -82,11 +80,11 @@ public class GeoInfo extends DataSupport implements Serializable {
         this.longtitude = longtitude;
     }
 
-    public double getElevation() {
+    public String getElevation() {
         return elevation;
     }
 
-    public void setElevation(double elevation) {
+    public void setElevation(String elevation) {
         this.elevation = elevation;
     }
 
