@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GeoInfo extends DataSupport implements Serializable {
 
-    private Projec project;
+    private Project project;
 
     private Long id;
     private String code;
@@ -40,11 +40,11 @@ public class GeoInfo extends DataSupport implements Serializable {
         this.pics = pics;
     }
 
-    public Projec getProject() {
+    public Project getProject() {
         return project;
     }
 
-    public void setProject(Projec project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 

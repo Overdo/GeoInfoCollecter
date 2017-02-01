@@ -7,6 +7,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.PhotoAdapter;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
-import com.example.overdo.geoinfocollecter.db.Projec;
+import com.example.overdo.geoinfocollecter.db.Project;
 import com.example.overdo.geoinfocollecter.listener.RecyclerItemClickListener;
 
 import org.litepal.crud.DataSupport;
@@ -68,7 +69,7 @@ public class PointDetailActivity extends BaseActivity {
     private PhotoAdapter photoAdapter;
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
-    private Projec mProjec;
+    private Project mProject;
 
 
     @Override
@@ -173,21 +174,28 @@ public class PointDetailActivity extends BaseActivity {
         String elevation = mTvHeight.getText().toString();
         String note = mTvNote.getText().toString();
 
-        //保存信息
-        List<Projec> projecs = DataSupport.select("projectname").where("projectname = ?", projectname).find(Projec.class);
+        if (TextUtils.isEmpty(projectname) ||
+                TextUtils.isEmpty(projectLeader) || TextUtils.isEmpty(projectCollefctor)
+                || TextUtils.isEmpty(code)) {
+            showToast("前四项别留空");
+            return;
+        }
 
-        if (projecs.isEmpty()) {
-            mProjec = new Projec();
-            mProjec.setCollector(projectCollefctor);
-            mProjec.setLeader(projectLeader);
-            mProjec.setProjectname(projectname);
-            mProjec.saveThrows();
+        //保存信息
+        List<Project> projects = DataSupport.select("projectname").where("projectname = ?", projectname).find(Project.class);
+
+        if (projects.isEmpty()) {
+            mProject = new Project();
+            mProject.setCollector(projectCollefctor);
+            mProject.setLeader(projectLeader);
+            mProject.setProjectname(projectname);
+            mProject.saveThrows();
 
         } else {
-            mProjec = projecs.get(0);
-            mProjec.setCollector(projectCollefctor);
-            mProjec.setLeader(projectLeader);
-            mProjec.setProjectname(projectname);
+            mProject = projects.get(0);
+            mProject.setCollector(projectCollefctor);
+            mProject.setLeader(projectLeader);
+            mProject.setProjectname(projectname);
         }
         //地理信息
         GeoInfo geoInfo = new GeoInfo();
@@ -198,11 +206,11 @@ public class PointDetailActivity extends BaseActivity {
         geoInfo.setCode(code);
         geoInfo.setElevation(elevation);
         geoInfo.setNote(note);
-        mProjec.getInfos().add(geoInfo);
+        mProject.getInfos().add(geoInfo);
 
         //图片信息 selectedPhotos
         geoInfo.getPics().addAll(selectedPhotos);
-        mProjec.saveThrows();
+        mProject.saveThrows();
         geoInfo.saveThrows();
         showToast("保存成功 ");
     }
@@ -213,7 +221,7 @@ public class PointDetailActivity extends BaseActivity {
      */
     private void initEditext() {
 
-        List<Projec> allProject = DataSupport.findAll(Projec.class);
+        List<Project> allProject = DataSupport.findAll(Project.class);
         if (!allProject.isEmpty()) {
             mTvProjectName.setText(allProject.get(allProject.size() - 1).getProjectname());
             mTvLeader.setText(allProject.get(allProject.size() - 1).getLeader());

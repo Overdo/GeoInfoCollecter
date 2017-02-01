@@ -1,18 +1,19 @@
 package com.example.overdo.geoinfocollecter.activities;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.overdo.geoinfocollecter.R;
-import com.example.overdo.geoinfocollecter.db.Projec;
+import com.example.overdo.geoinfocollecter.adapter.ProjectAdapter;
+import com.example.overdo.geoinfocollecter.db.Project;
 import com.yydcdut.sdlv.Menu;
 import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
@@ -24,104 +25,63 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.yydcdut.sdlv.Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
+
 /**
  * Created by Overdo on 2017/1/29.
  */
-public class ProjectManagerActivity extends BaseActivity {
+public class ProjectManagerActivity extends BaseActivity implements SlideAndDragListView.OnMenuItemClickListener{
 
     @InjectView(R.id.lv_projects)
     SlideAndDragListView mLvProjects;
-    private List<Projec> mProjectList;
+    @InjectView(R.id.tv_nodata)
+    TextView mTvNodata;
+    private List<Project> mProjectList;
+    private ProjectAdapter mAdapter;
+    private int mResponse;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_manager);
         ButterKnife.inject(this);
-        initToolbar();
 
-        intiListview();
+        initToolbar();
+        intiView();
+        initListener();
 
     }
 
-    private void intiListview() {
+    private void initListener() {
 
-        Menu menu = new Menu(true, true);
-        menu.addItem(new MenuItem.Builder()
-                .setWidth(100)
-                .setText("删除")
-                .setTextColor(Color.RED)
-                .setDirection(MenuItem.DIRECTION_RIGHT)
-                .build());
-        mLvProjects.setMenu(menu);
+    }
 
-        mProjectList = DataSupport.findAll(Projec.class);
+    private void intiView() {
+        mProjectList = DataSupport.findAll(Project.class);
 
         if (mProjectList.isEmpty()) {
-            showToast("空数据库");
+            mLvProjects.setVisibility(View.GONE);
+            mTvNodata.setVisibility(View.VISIBLE);
         } else {
+            mLvProjects.setVisibility(View.VISIBLE);
+            mTvNodata.setVisibility(View.GONE);
+            Menu menu = new Menu(true, true);
+            menu.addItem(new MenuItem.Builder()
+                    .setWidth(100)
+                    .setText("删除")
+                    .setTextColor(Color.RED)
+                    .setDirection(MenuItem.DIRECTION_RIGHT)
+                    .build());
 
+            mLvProjects.setMenu(menu);
+            mAdapter = new ProjectAdapter(mProjectList);
             mLvProjects.setAdapter(mAdapter);
+            mLvProjects.setOnMenuItemClickListener(this);
         }
 
 
     }
-
-    private BaseAdapter mAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return mProjectList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mProjectList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            viewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(ProjectManagerActivity.this).inflate(R.layout.projectlist_item, null);
-                holder = new viewHolder();
-                holder.projectName = (TextView) convertView.findViewById(R.id.item_projectname);
-                holder.projectLeader = (TextView) convertView.findViewById(R.id.item_projectleader);
-                holder.projectCollector = (TextView) convertView.findViewById(R.id.item_projectcollector);
-                convertView.setTag(holder);
-            } else {
-                holder = (viewHolder) convertView.getTag();
-            }
-
-            holder.projectName.setText(mProjectList.get(position).getProjectname());
-            holder.projectLeader.setText("负责：" + mProjectList.get(position).getLeader());
-            holder.projectCollector.setText("采集：" + mProjectList.get(position).getCollector());
-
-            holder.projectName.setOnClickListener(mOnClickListener);
-            return convertView;
-
-        }
-
-        class viewHolder {
-            TextView projectName,projectLeader,projectCollector;
-
-        }
-
-        private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Object o = v.getTag();
-                if (o instanceof Integer) {
-                    Toast.makeText(ProjectManagerActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-    };
-
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
@@ -135,4 +95,51 @@ public class ProjectManagerActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public int onMenuItemClick(View v, final int itemPosition, int buttonPosition, int direction) {
+
+        showDeleteProjectDialog();
+
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case ITEM_DELETE_FROM_BOTTOM_TO_TOP:
+                        DataSupport.delete(Project.class, mProjectList.get(itemPosition).getId());
+                        mProjectList.remove(itemPosition);
+                        showToast("删除成功");
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        };
+
+        return mResponse;
+    }
+
+    private void showDeleteProjectDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectManagerActivity.this);
+        builder.setTitle("警告！");
+        builder.setMessage("这个操作会删除这个项目的所有数据！");
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                mHandler.sendEmptyMessage(ITEM_DELETE_FROM_BOTTOM_TO_TOP);
+            }
+        });
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+
+    }
+
 }

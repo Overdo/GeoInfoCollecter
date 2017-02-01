@@ -27,6 +27,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public static final int PERMISSION_GRANTED = 1;
     private SharedPreferences mConfig;
+    private Toast mToast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +44,11 @@ public class BaseActivity extends AppCompatActivity {
 
     //displaying toast
     public void showToast(String message) {
-        Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
 

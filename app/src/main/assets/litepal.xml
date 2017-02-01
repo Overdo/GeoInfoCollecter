@@ -33,7 +33,7 @@
     -->
     <list>
         <mapping class="com.example.overdo.geoinfocollecter.db.GeoInfo"></mapping>
-        <mapping class="com.example.overdo.geoinfocollecter.db.Projec"></mapping>
+        <mapping class="com.example.overdo.geoinfocollecter.db.Project"></mapping>
     </list>
 
     <!--

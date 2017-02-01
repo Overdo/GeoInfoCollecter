@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Overdo on 2017/1/31.
  */
 
-public class Projec extends DataSupport implements Serializable {
+public class Project extends DataSupport implements Serializable {
 
 
     private long id;
@@ -29,7 +29,6 @@ public class Projec extends DataSupport implements Serializable {
         this.id = id;
     }
 
-
     public String getProjectname() {
         return projectname;
     }
@@ -37,7 +36,6 @@ public class Projec extends DataSupport implements Serializable {
     public void setProjectname(String projectname) {
         this.projectname = projectname;
     }
-
 
     public List<GeoInfo> getInfos() {
         return infos;
