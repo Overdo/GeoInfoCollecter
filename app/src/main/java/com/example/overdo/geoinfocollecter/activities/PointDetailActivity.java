@@ -70,7 +70,6 @@ public class PointDetailActivity extends BaseActivity {
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
     private Project mProject;
-    private Project intentprojectData;
 
 
     @Override
@@ -81,6 +80,7 @@ public class PointDetailActivity extends BaseActivity {
 
         initToolbar();
         initData();
+        initRecyclerView();
     }
 
 
@@ -112,6 +112,8 @@ public class PointDetailActivity extends BaseActivity {
             initEditext();
         }
 
+        selectedPhotos = (ArrayList<String>) intentGeoinfoData.getPics();
+
         mTvDate.setText(intentGeoinfoData.getDate());
         mTvLocation.setText("" + intentGeoinfoData.getAddress());
         mTvLat.setText(intentGeoinfoData.getLatitude() + "");
@@ -128,7 +130,7 @@ public class PointDetailActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ibtn_add_photo:
-                initRecyclerView();
+                initPhotoPicker();
                 mIbtnAddPhoto.setVisibility(View.GONE);
                 break;
             case R.id.btn_cancel:
@@ -142,12 +144,7 @@ public class PointDetailActivity extends BaseActivity {
 
     private void initRecyclerView() {
 
-        PhotoPicker.builder()
-                .setPhotoCount(9)
-                .setShowCamera(true)
-                .setShowGif(true)
-                .setPreviewEnabled(false)
-                .start(this, PhotoPicker.REQUEST_CODE);
+
 
         RecyclerView rv_photoes = (RecyclerView) findViewById(R.id.rv_photoes);
         photoAdapter = new PhotoAdapter(this, selectedPhotos);
@@ -174,6 +171,15 @@ public class PointDetailActivity extends BaseActivity {
                         }
                     }
                 }));
+    }
+
+    private void initPhotoPicker() {
+        PhotoPicker.builder()
+                .setPhotoCount(9)
+                .setShowCamera(true)
+                .setShowGif(true)
+                .setPreviewEnabled(false)
+                .start(this, PhotoPicker.REQUEST_CODE);
     }
 
     private void saveGeoInfos() {
