@@ -6,4 +6,5 @@ package com.example.overdo.geoinfocollecter.listener;
 
 public interface IOnItemClickListener {
     void onclick(int position);
+    void ondelete(int position);
 }

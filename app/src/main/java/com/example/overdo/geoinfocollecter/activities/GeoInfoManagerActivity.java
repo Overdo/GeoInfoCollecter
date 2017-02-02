@@ -92,6 +92,11 @@ public class GeoInfoManagerActivity extends BaseActivity implements SlideAndDrag
                     intent.putExtra("geo_info", mGeoInfoList.get(position));
                     startActivity(intent);
                 }
+
+                @Override
+                public void ondelete(int position) {
+
+                }
             });
 
             mLvGeoinfos.setAdapter(mAdapter);
