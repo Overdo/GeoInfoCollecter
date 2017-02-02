@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+    <item
+        android:id="@+id/collect"
+        android:icon="@drawable/ic_add_box_black_24dp"
+        android:title="数据采集"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/distribute"
+        android:title="数据分布"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/manager"
+        android:icon="@drawable/ic_markunread_mailbox_black_24dp"
+        android:title="数据管理"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/layer"
+        android:title="图层"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/about"
+        android:title="关于"
+        app:showAsAction="never"/>
+
+
+</menu>

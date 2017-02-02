@@ -11,11 +11,6 @@
 
     </style>
 
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
-        <item name="android:textColor">@color/half_black</item>
-    </style>
-
     <style name="actionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@android:color/primary_text_light</item>
         <item name="actionBarSize">@dimen/actionBarSize</item>
@@ -27,6 +22,5 @@
         <item name="actionBarSize">@dimen/actionBarSize</item>
         <item name="colorPrimaryDark">#CCa500</item>
     </style>
-
 
 </resources>

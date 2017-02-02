@@ -19,7 +19,7 @@ import butterknife.OnClick;
  */
 public class AboutActivity extends BaseActivity {
 
-    CardView c_dp, c_dev, c_mdt;
+    CardView c_dev, c_mdt;
     @InjectView(R.id.iv_github)
     ImageView mIvGithub;
 
@@ -28,21 +28,12 @@ public class AboutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         ButterKnife.inject(this);
-        c_dp = (CardView) findViewById(R.id.card_designpicks);
         c_dev = (CardView) findViewById(R.id.card_devaccount);
-        c_dp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://github.com/Overdo/GeoInfoCollecter";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
+
         c_dev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "https://github.com/Overdo/GeoInfoCollecter";
+                String url = "http://guanjiancheng.xyz/about/";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);

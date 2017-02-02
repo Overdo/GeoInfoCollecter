@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">GeoInfoCollecter</string>
     <string name="no_result">对不起，没有搜索到相关数据！</string>
-    <string name="drawer_open">open_drawer</string>
-    <string name="drawer_close">close_drawer</string>
 </resources>

@@ -1,18 +1,17 @@
 package com.example.overdo.geoinfocollecter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -49,7 +48,6 @@ import com.example.overdo.geoinfocollecter.activities.BaseActivity;
 import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
 import com.example.overdo.geoinfocollecter.activities.ProjectManagerActivity;
-import com.example.overdo.geoinfocollecter.activities.SettingActivity;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
 
 import org.litepal.LitePal;
@@ -65,7 +63,7 @@ import butterknife.OnClick;
  * create by Overdo in 2017/01/23
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
-        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener, NavigationView.OnNavigationItemSelectedListener {
+        GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
 
 
     @InjectView(R.id.coordinatorlayout)
@@ -80,10 +78,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     RelativeLayout mRoot;
     @InjectView(R.id.btn_collect)
     Button mBtnCollect;
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @InjectView(R.id.nav_view)
-    NavigationView mNavView;
     private AMap mMap;
     private MapView mMapView;
     private UiSettings mUiSetting;
@@ -107,6 +101,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private int mapType;
     private long exitTime = 0;
 
+    private CharSequence[] maptypes = {"普通地图", "卫星地图", "交通地图"};
+    private boolean[] checkedItems = {true, false, false};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,17 +126,9 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private void initToolbarAndNavigationView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("地理信息采集系统");
-        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
+        getSupportActionBar().setTitle("地理信息采集助手");
 
-        mNavView.setNavigationItemSelectedListener(this);
+
     }
 
 
@@ -477,27 +466,60 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_data_collect:
+            case R.id.collect:
+                intentToClass(PointDetailActivity.class);
                 break;
-            case R.id.nav_data_distribute:
-                break;
-            case R.id.nav_data_manager:
+            case R.id.manager:
                 intentToClass(ProjectManagerActivity.class);
                 break;
-            case R.id.nav_tools:
+            case R.id.distribute:
+
                 break;
-            case R.id.nav_setting:
-                intentToClass(SettingActivity.class);
+            case R.id.layer:
+                dialogChooseLayer();
                 break;
-            case R.id.nav_about:
+            case R.id.about:
                 intentToClass(AboutActivity.class);
                 break;
         }
         return true;
+    }
+
+    private void dialogChooseLayer() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("选择显示图层");
+        builder.setSingleChoiceItems(maptypes, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        mMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                        break;
+                    case 1:
+                        mMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+                        break;
+                    case 2:
+                        mMap.setMapType(AMap.MAP_TYPE_NAVI);
+                        break;
+                }
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
 
@@ -517,10 +539,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 
-            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                return true;
-            }
             if ((System.currentTimeMillis() - exitTime) > 2000) {
                 Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();

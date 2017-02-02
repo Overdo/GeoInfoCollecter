@@ -22,7 +22,9 @@ import com.example.overdo.geoinfocollecter.listener.RecyclerItemClickListener;
 
 import org.litepal.crud.DataSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -103,13 +105,20 @@ public class PointDetailActivity extends BaseActivity {
             return;
         }
         intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
+        initProjectEditext();
 
-        if (intentGeoinfoData.getProject() != null) {
+        if (intentGeoinfoData == null) {
+            mTvDate.setText(getFormattime());
+            mTvLocation.setText("");
+            mTvHeight.setText("");
+            mTvCode.setText("");
+            mTvLng.setText("");
+            mTvNote.setText("");
+            return;
+        } else if (intentGeoinfoData.getProject() != null) {
             mTvLeader.setText(intentGeoinfoData.getProject().getLeader() == null ? "" : intentGeoinfoData.getProject().getLeader());
             mTvCollector.setText(intentGeoinfoData.getProject().getCollector() == null ? "" : intentGeoinfoData.getProject().getLeader());
             mTvProjectName.setText(intentGeoinfoData.getProject().getProjectname() == null ? "" : intentGeoinfoData.getProject().getLeader());
-        } else {
-            initEditext();
         }
 
         selectedPhotos = (ArrayList<String>) intentGeoinfoData.getPics();
@@ -143,7 +152,6 @@ public class PointDetailActivity extends BaseActivity {
     }
 
     private void initRecyclerView() {
-
 
 
         RecyclerView rv_photoes = (RecyclerView) findViewById(R.id.rv_photoes);
@@ -241,7 +249,7 @@ public class PointDetailActivity extends BaseActivity {
      * 初始化回显信息
      * 初始化回显信息
      */
-    private void initEditext() {
+    private void initProjectEditext() {
 
         List<Project> allProject = DataSupport.findAll(Project.class);
         if (!allProject.isEmpty()) {
@@ -269,6 +277,12 @@ public class PointDetailActivity extends BaseActivity {
             }
             photoAdapter.notifyDataSetChanged();
         }
+    }
+
+    private String getFormattime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日   HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());
+        return  formatter.format(curDate);
     }
 
 }
