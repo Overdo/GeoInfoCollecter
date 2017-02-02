@@ -12,15 +12,44 @@
         <include layout="@layout/appbar"/>
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:layout_weight="1"
+            android:text="编号"
+            android:textColor="@color/__picker_text_40"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:layout_weight="3"
+            android:text="纬度/经度"
+            android:textColor="@color/__picker_text_40"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:layout_weight="1"
+            android:text="高程"
+            android:textColor="@color/__picker_text_40"/>
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.yydcdut.sdlv.SlideAndDragListView
-            android:id="@+id/lv_projects"
+            android:id="@+id/lv_geoinfos"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="30dp"
             android:divider="@android:color/black"
             android:dividerHeight="0.5dip"
             android:listSelector="@drawable/list_selector"

@@ -1,6 +1,7 @@
 package com.example.overdo.geoinfocollecter.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.ProjectAdapter;
 import com.example.overdo.geoinfocollecter.db.Project;
+import com.example.overdo.geoinfocollecter.listener.IOnItemClickListener;
 import com.yydcdut.sdlv.Menu;
 import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
@@ -26,11 +28,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.yydcdut.sdlv.Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
+import static com.yydcdut.sdlv.Menu.ITEM_NOTHING;
 
 /**
  * Created by Overdo on 2017/1/29.
  */
-public class ProjectManagerActivity extends BaseActivity implements SlideAndDragListView.OnMenuItemClickListener{
+public class ProjectManagerActivity extends BaseActivity implements SlideAndDragListView.OnMenuItemClickListener {
 
     @InjectView(R.id.lv_projects)
     SlideAndDragListView mLvProjects;
@@ -38,7 +41,6 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
     TextView mTvNodata;
     private List<Project> mProjectList;
     private ProjectAdapter mAdapter;
-    private int mResponse;
     private Handler mHandler;
 
     @Override
@@ -75,7 +77,15 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
                     .build());
 
             mLvProjects.setMenu(menu);
-            mAdapter = new ProjectAdapter(mProjectList);
+            mAdapter = new ProjectAdapter(mProjectList, new IOnItemClickListener() {
+                @Override
+                public void onclick(int position) {
+                    Intent intent = new Intent(ProjectManagerActivity.this, GeoInfoManagerActivity.class);
+                    intent.putExtra("geoinfo_list", mProjectList.get(position));
+                    startActivity(intent);
+                }
+            });
+
             mLvProjects.setAdapter(mAdapter);
             mLvProjects.setOnMenuItemClickListener(this);
         }
@@ -101,11 +111,11 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
 
         showDeleteProjectDialog();
 
-        mHandler = new Handler(){
+        mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                switch (msg.what){
+                switch (msg.what) {
                     case ITEM_DELETE_FROM_BOTTOM_TO_TOP:
                         DataSupport.delete(Project.class, mProjectList.get(itemPosition).getId());
                         mProjectList.remove(itemPosition);
@@ -115,8 +125,7 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
                 }
             }
         };
-
-        return mResponse;
+        return ITEM_NOTHING;
     }
 
     private void showDeleteProjectDialog() {
