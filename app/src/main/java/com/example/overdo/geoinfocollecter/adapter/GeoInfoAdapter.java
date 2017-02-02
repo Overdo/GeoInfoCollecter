@@ -14,20 +14,20 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.example.overdo.geoinfocollecter.R;
-import com.example.overdo.geoinfocollecter.db.Project;
+import com.example.overdo.geoinfocollecter.db.GeoInfo;
 import com.example.overdo.geoinfocollecter.listener.IOnItemClickListener;
 
 import java.util.List;
 
-public class ProjectAdapter extends BaseSwipeAdapter {
+public class GeoInfoAdapter extends BaseSwipeAdapter {
 
     private Context mContext;
-    private List<Project> mProjectList;
+    private List<GeoInfo> mGeoInfos;
     private IOnItemClickListener mClickListener;
 
-    public ProjectAdapter(Context mContext, List<Project> projectList, IOnItemClickListener listener) {
+    public GeoInfoAdapter(Context mContext, List<GeoInfo> geoInfos, IOnItemClickListener listener) {
         this.mContext = mContext;
-        this.mProjectList = projectList;
+        this.mGeoInfos = geoInfos;
         this.mClickListener = listener;
     }
 
@@ -38,18 +38,19 @@ public class ProjectAdapter extends BaseSwipeAdapter {
 
     @Override
     public View generateView(int position, ViewGroup parent) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.item_projectlist, null);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.item_geoinfoslist, null);
         return v;
     }
 
     @Override
     public void fillValues(final int position, View convertView) {
-        TextView projectName = (TextView) convertView.findViewById(R.id.item_projectname);
-        TextView projectLeader = (TextView) convertView.findViewById(R.id.item_projectleader);
-        TextView projectCollector = (TextView) convertView.findViewById(R.id.item_projectcollector);
-        projectName.setText("项目：" + mProjectList.get(position).getProjectname());
-        projectLeader.setText("负责：" + mProjectList.get(position).getLeader());
-        projectCollector.setText("  记录：" + mProjectList.get(position).getCollector());
+        TextView code = (TextView) convertView.findViewById(R.id.point_code);
+        TextView latlng = (TextView) convertView.findViewById(R.id.point_latlng);
+        TextView elevation = (TextView) convertView.findViewById(R.id.point_elevation);
+
+        code.setText(mGeoInfos.get(position).getCode());
+        latlng.setText("(" + mGeoInfos.get(position).getLatitude() + "," + mGeoInfos.get(position).getLongtitude() + ")");
+        elevation.setText(mGeoInfos.get(position).getElevation());
 
         final SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(getSwipeLayoutResourceId(position));
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
@@ -78,7 +79,7 @@ public class ProjectAdapter extends BaseSwipeAdapter {
 
     @Override
     public int getCount() {
-        return mProjectList.size();
+        return mGeoInfos.size();
     }
 
     @Override

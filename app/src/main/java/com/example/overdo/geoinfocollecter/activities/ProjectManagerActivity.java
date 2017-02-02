@@ -3,8 +3,6 @@ package com.example.overdo.geoinfocollecter.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +17,6 @@ import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.ProjectAdapter;
 import com.example.overdo.geoinfocollecter.db.Project;
 import com.example.overdo.geoinfocollecter.listener.IOnItemClickListener;
-import com.yydcdut.sdlv.SlideAndDragListView;
 
 import org.litepal.crud.DataSupport;
 
@@ -28,14 +25,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.example.overdo.geoinfocollecter.R.id.position;
-import static com.yydcdut.sdlv.Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
-import static com.yydcdut.sdlv.Menu.ITEM_NOTHING;
-
 /**
  * Created by Overdo on 2017/1/29.
  */
-public class ProjectManagerActivity extends BaseActivity implements SlideAndDragListView.OnMenuItemClickListener {
+public class ProjectManagerActivity extends BaseActivity{
 
     @InjectView(R.id.lv_projects)
     ListView mLvProjects;
@@ -43,7 +36,6 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
     TextView mTvNodata;
     private List<Project> mProjectList;
     private ProjectAdapter mAdapter;
-    private Handler mHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,13 +45,6 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
 
         initToolbar();
         intiView();
-        initListener();
-
-
-    }
-
-    private void initListener() {
-
     }
 
     private void intiView() {
@@ -94,9 +79,8 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
                 }
             });
         }
-
-
     }
+
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
@@ -109,28 +93,6 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
                 finish();
             }
         });
-    }
-
-    @Override
-    public int onMenuItemClick(View v, final int itemPosition, int buttonPosition, int direction) {
-
-           showDeleteProjectDialog(position);
-
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case ITEM_DELETE_FROM_BOTTOM_TO_TOP:
-                        DataSupport.delete(Project.class, mProjectList.get(itemPosition).getId());
-                        mProjectList.remove(itemPosition);
-                        showToast("删除成功");
-                        mAdapter.notifyDataSetChanged();
-                        break;
-                }
-            }
-        };
-        return ITEM_NOTHING;
     }
 
     private void showDeleteProjectDialog(final int position) {
@@ -156,7 +118,6 @@ public class ProjectManagerActivity extends BaseActivity implements SlideAndDrag
         });
 
         builder.show();
-
     }
 
 }

@@ -46,16 +46,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.yydcdut.sdlv.SlideAndDragListView
+        <ListView
             android:id="@+id/lv_geoinfos"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:divider="@android:color/black"
             android:dividerHeight="0.5dip"
             android:listSelector="@drawable/list_selector"
             android:paddingLeft="8dip"
             android:paddingRight="8dip">
-        </com.yydcdut.sdlv.SlideAndDragListView>
+        </ListView>
 
         <TextView
             android:id="@+id/tv_nodata"
