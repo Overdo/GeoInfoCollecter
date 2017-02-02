@@ -460,8 +460,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
                 geoinfo.setDate(dateNowStr);
                 geoinfo.setAddress(addressName);
-                geoinfo.setLatitude(aimPoint.getLatitude());
-                geoinfo.setLongtitude(aimPoint.getLongitude());
+                geoinfo.setLatitude(aimPoint.getLatitude() + "");
+                geoinfo.setLongtitude(aimPoint.getLongitude() + "");
                 geoinfo.setElevation(mCurrentElevation);
 
                 Intent intent2 = new Intent(MainActivity.this, PointDetailActivity.class);

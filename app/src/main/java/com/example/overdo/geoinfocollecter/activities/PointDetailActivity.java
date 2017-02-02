@@ -40,11 +40,11 @@ public class PointDetailActivity extends BaseActivity {
     @InjectView(R.id.tv_date)
     TextView mTvDate;
     @InjectView(R.id.tv_location)
-    TextView mTvLocation;
+    EditText mTvLocation;
     @InjectView(R.id.tv_lat)
-    TextView mTvLat;
+    EditText mTvLat;
     @InjectView(R.id.tv_lng)
-    TextView mTvLng;
+    EditText mTvLng;
     @InjectView(R.id.btn_cancel)
     Button mBtnCancel;
     @InjectView(R.id.btn_confirm_save)
@@ -63,13 +63,14 @@ public class PointDetailActivity extends BaseActivity {
     EditText mTvHeight;
     @InjectView(R.id.tv_note)
     EditText mTvNote;
-    private GeoInfo intentData;
+    private GeoInfo intentGeoinfoData;
     private static final String TAG = "PointDetailActivity";
 
     private PhotoAdapter photoAdapter;
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
     private Project mProject;
+    private Project intentprojectData;
 
 
     @Override
@@ -78,9 +79,8 @@ public class PointDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_pointdetail);
         ButterKnife.inject(this);
 
-        getIntentData();
         initToolbar();
-        initEditext();
+        initData();
     }
 
 
@@ -97,18 +97,30 @@ public class PointDetailActivity extends BaseActivity {
         });
     }
 
-    private void getIntentData() {
+    private void initData() {
         Intent intent = getIntent();
         if (intent == null) {
             return;
         }
-        intentData = (GeoInfo) intent.getSerializableExtra("geo_info");
-        mTvDate.setText(intentData.getDate());
-        mTvLocation.setText("地址：" + intentData.getAddress());
-        mTvLat.setText("latitude：" + intentData.getLatitude());
-        mTvLng.setText("longtitude：" + intentData.getLongtitude());
-        mTvLeader.setText(getProjectConfig("projection_charger"));
-        mTvCollector.setText(getProjectConfig("projection_collector"));
+        intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
+
+        if (intentGeoinfoData.getProject() != null) {
+            mTvLeader.setText(intentGeoinfoData.getProject().getLeader() == null ? "" : intentGeoinfoData.getProject().getLeader());
+            mTvCollector.setText(intentGeoinfoData.getProject().getCollector() == null ? "" : intentGeoinfoData.getProject().getLeader());
+            mTvProjectName.setText(intentGeoinfoData.getProject().getProjectname() == null ? "" : intentGeoinfoData.getProject().getLeader());
+        } else {
+            initEditext();
+        }
+
+        mTvDate.setText(intentGeoinfoData.getDate());
+        mTvLocation.setText("" + intentGeoinfoData.getAddress());
+        mTvLat.setText(intentGeoinfoData.getLatitude() + "");
+        mTvLng.setText("" + intentGeoinfoData.getLongtitude());
+
+        mTvNote.setText(intentGeoinfoData.getNote() == null ? "" : intentGeoinfoData.getNote());
+        mTvHeight.setText(intentGeoinfoData.getElevation() == null ? "" : intentGeoinfoData.getElevation());
+        mTvCode.setText(intentGeoinfoData.getCode() == null ? "" : intentGeoinfoData.getCode());
+
 
     }
 
@@ -173,6 +185,10 @@ public class PointDetailActivity extends BaseActivity {
         String code = mTvCode.getText().toString();
         String elevation = mTvHeight.getText().toString();
         String note = mTvNote.getText().toString();
+        String location = mTvLocation.getText().toString();
+        String latitude = mTvLat.getText().toString();
+        String longtitude = mTvLng.getText().toString();
+
 
         if (TextUtils.isEmpty(projectname) ||
                 TextUtils.isEmpty(projectLeader) || TextUtils.isEmpty(projectCollefctor)
@@ -199,10 +215,10 @@ public class PointDetailActivity extends BaseActivity {
         }
         //地理信息
         GeoInfo geoInfo = new GeoInfo();
-        geoInfo.setLatitude(intentData.getLatitude());
-        geoInfo.setAddress(intentData.getAddress());
-        geoInfo.setLongtitude(intentData.getLongtitude());
-        geoInfo.setDate(intentData.getDate());
+        geoInfo.setLatitude(latitude);
+        geoInfo.setAddress(location);
+        geoInfo.setLongtitude(longtitude);
+        geoInfo.setDate(intentGeoinfoData.getDate());
         geoInfo.setCode(code);
         geoInfo.setElevation(elevation);
         geoInfo.setNote(note);

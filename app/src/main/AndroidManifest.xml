@@ -84,7 +84,6 @@
         <activity android:name=".activities.SettingActivity"/>
         <activity android:name=".activities.ProjectManagerActivity"/>
         <activity android:name=".activities.GeoInfoManagerActivity"/>
-        <activity android:name=".activities.GeoInfoDetailActivity"/>
 
     </application>
 

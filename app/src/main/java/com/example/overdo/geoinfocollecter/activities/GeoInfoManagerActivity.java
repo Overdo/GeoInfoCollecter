@@ -81,15 +81,15 @@ public class GeoInfoManagerActivity extends BaseActivity implements SlideAndDrag
                     .setWidth(100)
                     .setText("删除")
                     .setTextColor(Color.RED)
-                    .setDirection(MenuItem.DIRECTION_RIGHT)
+                    .setDirection(MenuItem.DIRECTION_LEFT)
                     .build());
 
             mLvGeoinfos.setMenu(menu);
             mAdapter = new GeoInfosAdapter(mGeoInfoList, new IOnItemClickListener() {
                 @Override
                 public void onclick(int position) {
-                    Intent intent = new Intent(GeoInfoManagerActivity.this, GeoInfoDetailActivity.class);
-                    intent.putExtra("geoinfo_list", mGeoInfoList.get(position));
+                    Intent intent = new Intent(GeoInfoManagerActivity.this, PointDetailActivity.class);
+                    intent.putExtra("geo_info", mGeoInfoList.get(position));
                     startActivity(intent);
                 }
             });

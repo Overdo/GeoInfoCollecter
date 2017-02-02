@@ -16,8 +16,8 @@ public class GeoInfo extends DataSupport implements Serializable {
 
     private Long id;
     private String code;
-    private double latitude;
-    private double longtitude;
+    private String latitude;
+    private String longtitude;
     private String elevation;
     private String address;
     private String date;
@@ -64,19 +64,19 @@ public class GeoInfo extends DataSupport implements Serializable {
         this.code = code;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongtitude() {
+    public String getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(double longtitude) {
+    public void setLongtitude(String longtitude) {
         this.longtitude = longtitude;
     }
 
