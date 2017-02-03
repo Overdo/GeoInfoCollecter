@@ -1,12 +1,17 @@
 package com.example.overdo.geoinfocollecter;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -49,11 +54,15 @@ import com.example.overdo.geoinfocollecter.activities.DriveRouteActivity;
 import com.example.overdo.geoinfocollecter.activities.PointDetailActivity;
 import com.example.overdo.geoinfocollecter.activities.ProjectManagerActivity;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
+import com.example.overdo.geoinfocollecter.db.Project;
 
 import org.litepal.LitePal;
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -103,6 +112,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     private CharSequence[] maptypes = {"普通地图", "卫星地图", "交通地图"};
     private boolean[] checkedItems = {true, false, false};
+    private List<Project> mProjectList;
 
 
     @Override
@@ -150,9 +160,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
         mMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-
-        mapType = getMapModeConfig("map_mode");
-        mMap.setMapType(mapType);
+        mMap.setMapType(AMap.MAP_TYPE_NORMAL);
 
         // 自定义系统定位蓝点
         MyLocationStyle myLocationStyle = new MyLocationStyle();
@@ -323,6 +331,19 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
+
+        //没有权限，申请权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
+        locateToCenter();
+    }
+
+    private void locateToCenter() {
         if (mlocationClient == null) {
             mlocationClient = new AMapLocationClient(this);
             mLocationOption = new AMapLocationClientOption();
@@ -361,9 +382,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
-        mapType = getMapModeConfig("map_mode");
-        mMap.setMapType(mapType);
-
     }
 
     /**
@@ -441,22 +459,21 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 }
                 break;
             case R.id.btn_collect:
-                GeoInfo geoinfo = new GeoInfo();
+                if (aimPoint != null) {
 
-                Date d = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dateNowStr = sdf.format(d);
+                    Date d = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String dateNowStr = sdf.format(d);
 
-                geoinfo.setDate(dateNowStr);
-                geoinfo.setAddress(addressName);
-                geoinfo.setLatitude(aimPoint.getLatitude() + "");
-                geoinfo.setLongtitude(aimPoint.getLongitude() + "");
-                geoinfo.setElevation(mCurrentElevation);
+                    GeoInfo geoinfo = new GeoInfo();
+                    geoinfo.setDate(dateNowStr);
+                    geoinfo.setAddress(addressName);
+                    geoinfo.setLatitude(aimPoint.getLatitude() + "");
+                    geoinfo.setLongtitude(aimPoint.getLongitude() + "");
+                    geoinfo.setElevation(mCurrentElevation);
 
-                Intent intent2 = new Intent(MainActivity.this, PointDetailActivity.class);
-                intent2.putExtra("geo_info", geoinfo);
-
-                if (addressName != null) {
+                    Intent intent2 = new Intent(MainActivity.this, PointDetailActivity.class);
+                    intent2.putExtra("geo_info", geoinfo);
                     startActivity(intent2);
                 } else {
                     showToast("长按选定采集点");
@@ -482,7 +499,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 intentToClass(ProjectManagerActivity.class);
                 break;
             case R.id.distribute:
-
+                dialogChooseShowWhitchProject();
                 break;
             case R.id.layer:
                 dialogChooseLayer();
@@ -492,6 +509,49 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 break;
         }
         return true;
+    }
+
+    private void dialogChooseShowWhitchProject() {
+
+        mProjectList = DataSupport.findAll(Project.class);
+        ArrayList<String> mList = new ArrayList<>();
+
+        for (int i = 0; i < mProjectList.size(); i++) {
+            mList.add(mProjectList.get(i).getProjectname().toString());
+
+        }
+        CharSequence[] mlist = mList.toArray(new CharSequence[mList.size()]);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("查看项目点分布");
+
+        builder.setMultiChoiceItems(mlist, new boolean[mlist.length], new DialogInterface.OnMultiChoiceClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                if (isChecked) {
+                    for (int i = 0; i < mProjectList.get(which).getGeoinfos().size(); i++) {
+                        Log.d(TAG, "onClick: " + mProjectList.get(which).getGeoinfos().get(i).getLongtitude());
+                        //添加marker
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                .position(new LatLng(Double.valueOf(mProjectList.get(which).getGeoinfos().get(i).getLatitude()),
+                                        Double.valueOf(mProjectList.get(which).getGeoinfos().get(i).getLongtitude())))
+                                .draggable(true));
+
+                    }
+                }
+            }
+        });
+
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void dialogChooseLayer() {
@@ -551,4 +611,18 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    showToast("权限定位被拒绝，到权限设置界面设置");
+
+                } else {
+                    locateToCenter();
+                }
+                break;
+        }
+    }
 }

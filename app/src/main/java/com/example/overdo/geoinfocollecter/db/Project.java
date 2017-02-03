@@ -18,7 +18,7 @@ public class Project extends DataSupport implements Serializable {
     private String leader;
     private String collector;
     private String projectname;
-    private List<GeoInfo> infos = new ArrayList<>();
+    private List<GeoInfo> geoinfos = new ArrayList<GeoInfo>();
 
 
     public long getId() {
@@ -37,12 +37,12 @@ public class Project extends DataSupport implements Serializable {
         this.projectname = projectname;
     }
 
-    public List<GeoInfo> getInfos() {
-        return infos;
+    public List<GeoInfo> getGeoinfos() {
+        return geoinfos;
     }
 
-    public void setInfos(List<GeoInfo> infos) {
-        this.infos = infos;
+    public void setGeoinfos(List<GeoInfo> geoinfos) {
+        this.geoinfos = geoinfos;
     }
 
     public String getLeader() {

@@ -1,7 +1,6 @@
 package com.example.overdo.geoinfocollecter.activities;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,13 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-
-import com.amap.api.maps.AMap;
-import com.example.overdo.geoinfocollecter.App;
-
-import static com.example.overdo.geoinfocollecter.entities.Constants.NORMAL_MAP;
-import static com.example.overdo.geoinfocollecter.entities.Constants.SATELITE_MAP;
-import static com.example.overdo.geoinfocollecter.entities.Constants.TRAFFIC_MAP;
 
 /**
  * Created by Overdo on 2017/1/23.
@@ -71,35 +63,4 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-
-    public void saveConfig(String name, String maptype) {
-        mConfig = App.getContext().getSharedPreferences("config", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mConfig.edit();
-        editor.putString(name, maptype);
-        editor.commit();
-    }
-
-    public int getMapModeConfig(String configType) {
-        if (mConfig == null) {
-            mConfig = App.getContext().getSharedPreferences("config", Context.MODE_PRIVATE);
-        }
-        switch (mConfig.getString(configType, NORMAL_MAP)) {
-            case NORMAL_MAP:
-                return AMap.MAP_TYPE_NORMAL;
-            case SATELITE_MAP:
-                return AMap.MAP_TYPE_SATELLITE;
-            case TRAFFIC_MAP:
-                return AMap.MAP_TYPE_NAVI;
-
-        }
-        return AMap.MAP_TYPE_NORMAL;
-    }
-
-    public String getProjectConfig(String configType) {
-        if (mConfig == null) {
-            mConfig = App.getContext().getSharedPreferences("config", Context.MODE_PRIVATE);
-        }
-
-        return mConfig.getString(configType,"");
-    }
 }

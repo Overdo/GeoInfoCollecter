@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/distribute"
-        android:title="数据分布"
+        android:title="分布"
         app:showAsAction="never"/>
     <item
         android:id="@+id/manager"

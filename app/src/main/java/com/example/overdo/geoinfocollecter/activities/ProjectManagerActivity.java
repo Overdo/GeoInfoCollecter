@@ -47,7 +47,10 @@ public class ProjectManagerActivity extends BaseActivity{
         intiView();
     }
 
+
+
     private void intiView() {
+
         mProjectList = DataSupport.findAll(Project.class);
 
         if (mProjectList.isEmpty()) {

@@ -197,6 +197,7 @@ public class PointDetailActivity extends BaseActivity {
         String projectLeader = mTvLeader.getText().toString();
         String projectCollefctor = mTvCollector.getText().toString();
         String code = mTvCode.getText().toString();
+        String date = mTvDate.getText().toString();
         String elevation = mTvHeight.getText().toString();
         String note = mTvNote.getText().toString();
         String location = mTvLocation.getText().toString();
@@ -219,7 +220,7 @@ public class PointDetailActivity extends BaseActivity {
             mProject.setCollector(projectCollefctor);
             mProject.setLeader(projectLeader);
             mProject.setProjectname(projectname);
-            mProject.saveThrows();
+
 
         } else {
             mProject = projects.get(0);
@@ -232,17 +233,21 @@ public class PointDetailActivity extends BaseActivity {
         geoInfo.setLatitude(latitude);
         geoInfo.setAddress(location);
         geoInfo.setLongtitude(longtitude);
-        geoInfo.setDate(intentGeoinfoData.getDate());
+        geoInfo.setDate(date);
         geoInfo.setCode(code);
         geoInfo.setElevation(elevation);
         geoInfo.setNote(note);
-        mProject.getInfos().add(geoInfo);
-
         //图片信息 selectedPhotos
         geoInfo.getPics().addAll(selectedPhotos);
+        geoInfo.save();
+        mProject.getGeoinfos().add(geoInfo);
         mProject.saveThrows();
-        geoInfo.saveThrows();
-        showToast("保存成功 ");
+        if(mProject.isSaved()&&geoInfo.isSaved()){
+            showToast("保存成功 ");
+        }else {
+            showToast("保存失败 ");
+        }
+
     }
 
     /**
