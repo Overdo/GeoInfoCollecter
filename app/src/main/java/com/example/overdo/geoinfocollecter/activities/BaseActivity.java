@@ -18,8 +18,8 @@ import android.widget.Toast;
 public class BaseActivity extends AppCompatActivity {
 
     public static final int PERMISSION_GRANTED = 1;
-    private SharedPreferences mConfig;
     private Toast mToast;
+    private SharedPreferences mSp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,5 +62,48 @@ public class BaseActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    public void setSPConfig(String type, String value) {
+        //获取到sharepreference 对象， 参数一为xml文件名，参数为文件的可操作模式
+        if (mSp == null) {
+            mSp = this.getSharedPreferences("config", MODE_APPEND);
+        }
+        //获取到编辑对象
+        SharedPreferences.Editor edit = mSp.edit();
+        //添加新的值，可见是键值对的形式添加
+        edit.putString(type, value);
+        //提交.
+        edit.commit();
+    }
+
+    public String getSPConfig(String type) {
+        //获取到sharepreference 对象， 参数一为xml文件名，参数为文件的可操作模式
+        if (mSp == null) {
+            mSp = this.getSharedPreferences("config", MODE_APPEND);
+        }
+        return mSp.getString(type, "hide");
+    }
+
+    public void setMapTypeConfig(String type, int value) {
+        //获取到sharepreference 对象， 参数一为xml文件名，参数为文件的可操作模式
+        if (mSp == null) {
+            mSp = this.getSharedPreferences("config", MODE_APPEND);
+        }
+        //获取到编辑对象
+        SharedPreferences.Editor edit = mSp.edit();
+        //添加新的值，可见是键值对的形式添加
+        edit.putInt(type, value);
+        //提交.
+        edit.commit();
+    }
+
+    public int getMapTypeonfig(String type) {
+        //获取到sharepreference 对象， 参数一为xml文件名，参数为文件的可操作模式
+        if (mSp == null) {
+            mSp = this.getSharedPreferences("config", MODE_APPEND);
+        }
+        return mSp.getInt(type,0);
+    }
+
 
 }

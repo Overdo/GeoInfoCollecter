@@ -137,8 +137,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         Toolbar toolbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("地理信息采集助手");
-
-
     }
 
 
@@ -160,7 +158,17 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         mMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
         mMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-        mMap.setMapType(AMap.MAP_TYPE_NORMAL);
+        switch (getMapTypeonfig("maptype")) {
+            case 0:
+                mMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                break;
+            case 1:
+                mMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+                break;
+            case 2:
+                mMap.setMapType(AMap.MAP_TYPE_NAVI);
+                break;
+        }
 
         // 自定义系统定位蓝点
         MyLocationStyle myLocationStyle = new MyLocationStyle();
@@ -518,59 +526,108 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
         for (int i = 0; i < mProjectList.size(); i++) {
             mList.add(mProjectList.get(i).getProjectname().toString());
-
+            setSPConfig(mProjectList.get(i).getProjectname(), "hide");
         }
         CharSequence[] mlist = mList.toArray(new CharSequence[mList.size()]);
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("查看项目点分布");
 
-        builder.setMultiChoiceItems(mlist, new boolean[mlist.length], new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(mlist, new boolean[mlist.length]
+                , new DialogInterface.OnMultiChoiceClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
-                if (isChecked) {
-                    for (int i = 0; i < mProjectList.get(which).getGeoinfos().size(); i++) {
-                        Log.d(TAG, "onClick: " + mProjectList.get(which).getGeoinfos().get(i).getLongtitude());
-                        //添加marker
-                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                                .position(new LatLng(Double.valueOf(mProjectList.get(which).getGeoinfos().get(i).getLatitude()),
-                                        Double.valueOf(mProjectList.get(which).getGeoinfos().get(i).getLongtitude())))
-                                .draggable(true));
+                        if (isChecked) {
+                            setSPConfig(mProjectList.get(which).getProjectname(), "show");
+                        } else {
+                            setSPConfig(mProjectList.get(which).getProjectname(), "hide");
 
+                        }
                     }
+                });
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whitch) {
+                dialog.dismiss();
+                //获取配置信息，添加marker
+                List<GeoInfo> list = getNeedAddMarKerProject();
+
+                for (int i = 0; i < list.size(); i++) {
+
+                    Log.d(TAG, "onClick: " + list.toString() + list.size());
+                    //添加marker
+                    mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .position(new LatLng(Double.valueOf(list.get(i).getLatitude()),
+                                    Double.valueOf((list.get(i).getLongtitude())))
+                            )).setTitle(list.get(i).getCode());
+
                 }
             }
         });
 
-
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("清空地图标记", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
+            public void onClick(DialogInterface dialog, int which) {
+                mMap.clear();
             }
         });
+
         builder.show();
     }
 
+    /**
+     * 获取需要添加marker的project
+     * @return
+     */
+    private List getNeedAddMarKerProject() {
+        List<Project> nlist = new ArrayList<Project>();
+        for (int i = 0; i < mProjectList.size(); i++) {
+            if (getSPConfig(mProjectList.get(i).getProjectname()).equals("show")) {
+                nlist.add(mProjectList.get(i));
+            }
+        }
+
+        List<GeoInfo> glist = new ArrayList<GeoInfo>();
+        for (int i = 0; i < nlist.size(); i++) {
+
+            final List<GeoInfo> mlist = DataSupport.where("project_id = ?", nlist.get(i).getId() + "").find(GeoInfo.class);
+            glist.addAll(mlist);
+        }
+
+        return glist;
+    }
+
+
     private void dialogChooseLayer() {
+        int itemNum = getMapTypeonfig("maptype");
+        Log.d(TAG, "dialogChooseLayer: " + itemNum);
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("选择显示图层");
-        builder.setSingleChoiceItems(maptypes, 0, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(maptypes, itemNum, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         mMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                        setMapTypeConfig("maptype", 0);
                         break;
                     case 1:
                         mMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+                        setMapTypeConfig("maptype", 1);
                         break;
                     case 2:
                         mMap.setMapType(AMap.MAP_TYPE_NAVI);
+                        setMapTypeConfig("maptype", 2);
                         break;
                 }
+            }
+        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
             }
         });
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
