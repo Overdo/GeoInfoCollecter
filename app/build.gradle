@@ -7,11 +7,12 @@ android {
         multiDexEnabled true
         applicationId "com.example.overdo.geoinfocollecter"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
