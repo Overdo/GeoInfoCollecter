@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class GeoInfoManagerActivity extends BaseActivity {
     private GeoInfoAdapter mAdapter;
     private Project mProject;
     private static final String TAG = "GeoInfoManagerActivity";
+    private List<Project> mPlist;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,18 +63,21 @@ public class GeoInfoManagerActivity extends BaseActivity {
                 finish();
             }
         });
+
     }
 
     private void initData() {
         mProject = (Project) getIntent().getSerializableExtra("geoinfo_list");
-        Log.d(TAG, "initData: mProject" + mProject.getGeoinfos());
-        mGeoInfoList = mProject.getGeoinfos();
+
     }
 
 
     private void intiView() {
         mGeoInfoList = DataSupport.findAll(GeoInfo.class);
         final List<GeoInfo> mlist = DataSupport.where("project_id = ?", mProject.getId() + "").find(GeoInfo.class);
+        mPlist = DataSupport.where("id = ?", mProject.getId() + "").find(Project.class);
+
+
         if (null == mGeoInfoList || mGeoInfoList.isEmpty()) {
             mLvGeoinfos.setVisibility(View.GONE);
             mTvNodata.setVisibility(View.VISIBLE);
@@ -85,6 +90,7 @@ public class GeoInfoManagerActivity extends BaseActivity {
                 public void onclick(int position) {
                     Intent intent = new Intent(GeoInfoManagerActivity.this, PointDetailActivity.class);
                     intent.putExtra("geo_info", mlist.get(position));
+                    intent.putExtra("project_info",mPlist.get(0));
                     startActivity(intent);
                 }
 
@@ -99,5 +105,25 @@ public class GeoInfoManagerActivity extends BaseActivity {
 
             mLvGeoinfos.setAdapter(mAdapter);
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.geo_manager, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_point:
+                Intent intent = new Intent(GeoInfoManagerActivity.this, PointDetailActivity.class);
+
+                intent.putExtra("project_info",mPlist.get(0));
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

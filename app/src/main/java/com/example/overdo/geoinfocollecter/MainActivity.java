@@ -31,6 +31,8 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.CoordinateConverter;
+import com.amap.api.location.DPoint;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -70,6 +72,7 @@ import butterknife.OnClick;
 
 /**
  * create by Overdo in 2017/01/23
+ *
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
         GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
@@ -105,14 +108,14 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     private GeocodeSearch geocoderSearch;
     private String addressName;
     private LatLonPoint mCurrentPoint;
-    private LatLonPoint aimPoint;
+    private DPoint aimPoint;
     private String mCurrentElevation;
-    private int mapType;
     private long exitTime = 0;
 
     private CharSequence[] maptypes = {"普通地图", "卫星地图", "交通地图"};
     private boolean[] checkedItems = {true, false, false};
     private List<Project> mProjectList;
+    private DPoint mDesLatLng;
 
 
     @Override
@@ -230,7 +233,26 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     mCoordinatorlayout.startAnimation(mShowAction);
                     mCoordinatorlayout.setVisibility(View.VISIBLE);
                 }
-                aimPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
+
+
+                //==========坐标系转换成wgs84===================================
+                CoordinateConverter converter = new CoordinateConverter(mContext);
+                // CoordType.GPS 待转换坐标类型
+                converter.from(CoordinateConverter.CoordType.GPS);
+                // sourceLatLng待转换坐标点 DPoint类型
+                aimPoint = new DPoint(latLng.latitude, latLng.longitude);
+                try {
+                    converter.coord(aimPoint);
+                    // 执行转换操作
+                    mDesLatLng = converter.convert();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //===============================================
+
+                //本app代码冗余逻辑混乱，只为完成毕业设计
+
+
                 getAddress(aimPoint);
             }
         });
@@ -240,9 +262,10 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     /**
      * 逆地理编码
      */
-    public void getAddress(final LatLonPoint latLonPoint) {
+    public void getAddress(final DPoint dPoint) {
 
-        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,
+        RegeocodeQuery query = new RegeocodeQuery(
+                new LatLonPoint(dPoint.getLatitude(), dPoint.getLongitude()), 200,
                 GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
         geocoderSearch.getFromLocationAsyn(query);// 设置异步逆地理编码请求
     }
@@ -442,11 +465,29 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             }
 
             //目标点
-            aimPoint = new LatLonPoint(marker.getPosition().latitude, marker.getPosition().longitude);
+            aimPoint = new DPoint(marker.getPosition().latitude, marker.getPosition().longitude);
+
+//=============================================
+            CoordinateConverter converter = new CoordinateConverter(this);
+            // CoordType.GPS 待转换坐标类型
+            converter.from(CoordinateConverter.CoordType.GPS);
+            // sourceLatLng待转换坐标点 DPoint类型
+            DPoint sourceLatLng = new DPoint(aimPoint.getLatitude(), aimPoint.getLongitude());
+            try {
+                converter.coord(sourceLatLng);
+                // 执行转换操作
+                mDesLatLng = converter.convert();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//===============================================
+
             getAddress(aimPoint);
 
+            String lat = mDesLatLng.getLatitude() + "";
+            String lng = mDesLatLng.getLongitude() + "";
 
-            mTvLocationDetail.setText(marker.getPosition().toString());
+            mTvLocationDetail.setText("lat/lng：(" + lat.substring(0, 9) + "," + lng.substring(0, 9));
         }
 
         return true;
@@ -459,7 +500,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case R.id.action_go_there:
                 Intent intent1 = new Intent(MainActivity.this, DriveRouteActivity.class);
                 intent1.putExtra("start_point", mCurrentPoint);
-                intent1.putExtra("aim_point", aimPoint);
+                intent1.putExtra("aim_point", new LatLonPoint(aimPoint.getLatitude(), aimPoint.getLongitude()));
                 if (aimPoint != null) {
                     startActivity(intent1);
                 } else {
@@ -472,6 +513,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     Date d = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String dateNowStr = sdf.format(d);
+
 
                     GeoInfo geoinfo = new GeoInfo();
                     geoinfo.setDate(dateNowStr);
@@ -580,6 +622,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
 
     /**
      * 获取需要添加marker的project
+     *
      * @return
      */
     private List getNeedAddMarKerProject() {

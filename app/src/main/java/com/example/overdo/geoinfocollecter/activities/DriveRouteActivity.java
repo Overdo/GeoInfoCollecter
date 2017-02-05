@@ -47,7 +47,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	private LatLonPoint mEndPoint ;
 
 	private final int ROUTE_TYPE_DRIVE = 2;
-	
+
 	private RelativeLayout mBottomLayout, mHeadLayout;
 	private TextView mRotueTimeDes, mRouteDetailDes;
 	private ProgressDialog progDialog = null;// 搜索时进度条
@@ -57,7 +57,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 		super.onCreate(bundle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.route_activity);
-		
+
 		mContext = this.getApplicationContext();
 		mapView = (MapView) findViewById(R.id.route_map);
 		mapView.onCreate(bundle);// 此方法必须重写
@@ -93,7 +93,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	private void init() {
 
 		if (aMap == null) {
-			aMap = mapView.getMap();	
+			aMap = mapView.getMap();
 		}
 		registerListener();
 		mRouteSearch = new RouteSearch(this);
@@ -112,7 +112,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 		aMap.setOnMarkerClickListener(DriveRouteActivity.this);
 		aMap.setOnInfoWindowClickListener(DriveRouteActivity.this);
 		aMap.setInfoWindowAdapter(DriveRouteActivity.this);
-		
+
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	@Override
 	public void onInfoWindowClick(Marker arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -142,9 +142,9 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	@Override
 	public void onMapClick(LatLng arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	/**
 	 * 开始搜索路径规划方案
 	 */
@@ -168,7 +168,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 
 	@Override
 	public void onBusRouteSearched(BusRouteResult result, int errorCode) {
-		
+
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 							startActivity(intent);
 						}
 					});
-					
+
 				} else if (result != null && result.getPaths() == null) {
 					ToastUtil.show(mContext, R.string.no_result);
 				}
@@ -220,15 +220,15 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 		} else {
 			ToastUtil.showerror(this.getApplicationContext(), errorCode);
 		}
-		
-		
+
+
 	}
 
 	@Override
 	public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
-		
+
 	}
-	
+
 
 	/**
 	 * 显示进度框
@@ -291,8 +291,8 @@ public class DriveRouteActivity extends AppCompatActivity implements OnMapClickL
 	@Override
 	public void onRideRouteSearched(RideRouteResult arg0, int arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }
 

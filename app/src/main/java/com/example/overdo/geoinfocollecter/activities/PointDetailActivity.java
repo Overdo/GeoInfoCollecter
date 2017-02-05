@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,6 +73,7 @@ public class PointDetailActivity extends BaseActivity {
 
     private ArrayList<String> selectedPhotos = new ArrayList<>();
     private Project mProject;
+    private Project intentProjectData;
 
 
     @Override
@@ -105,6 +107,8 @@ public class PointDetailActivity extends BaseActivity {
             return;
         }
         intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
+        intentProjectData = (Project) intent.getSerializableExtra("project_info");
+        Log.d(TAG, "initData: intentProjectData" + intentProjectData.getProjectname());
         initProjectEditext();
 
         if (intentGeoinfoData == null) {
@@ -115,11 +119,12 @@ public class PointDetailActivity extends BaseActivity {
             mTvLng.setText("");
             mTvNote.setText("");
             return;
-        } else if (intentGeoinfoData.getProject() != null) {
-            mTvLeader.setText(intentGeoinfoData.getProject().getLeader() == null ? "" : intentGeoinfoData.getProject().getLeader());
-            mTvCollector.setText(intentGeoinfoData.getProject().getCollector() == null ? "" : intentGeoinfoData.getProject().getLeader());
-            mTvProjectName.setText(intentGeoinfoData.getProject().getProjectname() == null ? "" : intentGeoinfoData.getProject().getLeader());
         }
+    /*    if (intentProjectData != null) {
+            mTvLeader.setText(intentProjectData.getLeader() == null ? "" : intentProjectData.getLeader());
+            mTvCollector.setText(intentProjectData.getCollector() == null ? "" : intentProjectData.getLeader());
+            mTvProjectName.setText(intentProjectData.getProjectname() == null ? "" : intentProjectData.getLeader());
+        }*/
 
         selectedPhotos = (ArrayList<String>) intentGeoinfoData.getPics();
 
@@ -242,9 +247,9 @@ public class PointDetailActivity extends BaseActivity {
         geoInfo.save();
         mProject.getGeoinfos().add(geoInfo);
         mProject.saveThrows();
-        if(mProject.isSaved()&&geoInfo.isSaved()){
+        if (mProject.isSaved() && geoInfo.isSaved()) {
             showToast("保存成功 ");
-        }else {
+        } else {
             showToast("保存失败 ");
         }
 
@@ -257,7 +262,11 @@ public class PointDetailActivity extends BaseActivity {
     private void initProjectEditext() {
 
         List<Project> allProject = DataSupport.findAll(Project.class);
-        if (!allProject.isEmpty()) {
+        if (intentProjectData != null) {
+            mTvProjectName.setText(intentProjectData.getProjectname());
+            mTvLeader.setText(intentProjectData.getLeader());
+            mTvCollector.setText(intentProjectData.getCollector());
+        } else{
             mTvProjectName.setText(allProject.get(allProject.size() - 1).getProjectname());
             mTvLeader.setText(allProject.get(allProject.size() - 1).getLeader());
             mTvCollector.setText(allProject.get(allProject.size() - 1).getCollector());
@@ -287,7 +296,7 @@ public class PointDetailActivity extends BaseActivity {
     private String getFormattime() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日   HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis());
-        return  formatter.format(curDate);
+        return formatter.format(curDate);
     }
 
 }
