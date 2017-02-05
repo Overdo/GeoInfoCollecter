@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -108,7 +107,6 @@ public class PointDetailActivity extends BaseActivity {
         }
         intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
         intentProjectData = (Project) intent.getSerializableExtra("project_info");
-        Log.d(TAG, "initData: intentProjectData" + intentProjectData.getProjectname());
         initProjectEditext();
 
         if (intentGeoinfoData == null) {
@@ -120,11 +118,7 @@ public class PointDetailActivity extends BaseActivity {
             mTvNote.setText("");
             return;
         }
-    /*    if (intentProjectData != null) {
-            mTvLeader.setText(intentProjectData.getLeader() == null ? "" : intentProjectData.getLeader());
-            mTvCollector.setText(intentProjectData.getCollector() == null ? "" : intentProjectData.getLeader());
-            mTvProjectName.setText(intentProjectData.getProjectname() == null ? "" : intentProjectData.getLeader());
-        }*/
+
 
         selectedPhotos = (ArrayList<String>) intentGeoinfoData.getPics();
 
