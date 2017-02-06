@@ -1,6 +1,5 @@
 package com.example.overdo.geoinfocollecter;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +9,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -133,7 +130,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         initAnimation();
         initMapClickListener();
 
-        SQLiteDatabase db = LitePal.getDatabase();
+
+        try {
+            SQLiteDatabase db = LitePal.getDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initToolbarAndNavigationView() {
@@ -362,6 +364,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
+/*
 
         //没有权限，申请权限
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -370,6 +373,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
+*/
 
         locateToCenter();
     }
@@ -487,7 +491,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             String lat = mDesLatLng.getLatitude() + "";
             String lng = mDesLatLng.getLongitude() + "";
 
-            mTvLocationDetail.setText("lat/lng：(" + lat.substring(0, 9) + "," + lng.substring(0, 9));
+            mTvLocationDetail.setText("lat/lng：(" + lat.substring(0, 9) + "," + lng.substring(0, 9)+")");
         }
 
         return true;

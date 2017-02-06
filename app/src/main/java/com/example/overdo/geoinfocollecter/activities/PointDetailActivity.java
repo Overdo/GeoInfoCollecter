@@ -73,6 +73,7 @@ public class PointDetailActivity extends BaseActivity {
     private ArrayList<String> selectedPhotos = new ArrayList<>();
     private Project mProject;
     private Project intentProjectData;
+    private List<Project> mProjectData;
 
 
     @Override
@@ -107,6 +108,9 @@ public class PointDetailActivity extends BaseActivity {
         }
         intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
         intentProjectData = (Project) intent.getSerializableExtra("project_info");
+
+        mProjectData = DataSupport.findAll(Project.class);
+
         initProjectEditext();
 
         if (intentGeoinfoData == null) {
@@ -255,15 +259,19 @@ public class PointDetailActivity extends BaseActivity {
      */
     private void initProjectEditext() {
 
-        List<Project> allProject = DataSupport.findAll(Project.class);
+        if (mProjectData != null && !mProjectData.isEmpty()) {
+            mTvProjectName.setText(mProjectData.get(0).getProjectname());
+            mTvLeader.setText(mProjectData.get(0).getLeader());
+            mTvCollector.setText(mProjectData.get(0).getCollector());
+        } else {
+            mTvProjectName.setText("");
+            mTvLeader.setText("");
+            mTvCollector.setText("");
+        }
         if (intentProjectData != null) {
             mTvProjectName.setText(intentProjectData.getProjectname());
             mTvLeader.setText(intentProjectData.getLeader());
             mTvCollector.setText(intentProjectData.getCollector());
-        } else{
-            mTvProjectName.setText(allProject.get(allProject.size() - 1).getProjectname());
-            mTvLeader.setText(allProject.get(allProject.size() - 1).getLeader());
-            mTvCollector.setText(allProject.get(allProject.size() - 1).getCollector());
         }
     }
 
