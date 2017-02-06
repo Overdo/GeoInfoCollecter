@@ -260,9 +260,9 @@ public class PointDetailActivity extends BaseActivity {
     private void initProjectEditext() {
 
         if (mProjectData != null && !mProjectData.isEmpty()) {
-            mTvProjectName.setText(mProjectData.get(0).getProjectname());
-            mTvLeader.setText(mProjectData.get(0).getLeader());
-            mTvCollector.setText(mProjectData.get(0).getCollector());
+            mTvProjectName.setText(mProjectData.get(mProjectData.size()-1).getProjectname());
+            mTvLeader.setText(mProjectData.get(mProjectData.size()-1).getLeader());
+            mTvCollector.setText(mProjectData.get(mProjectData.size()-1).getCollector());
         } else {
             mTvProjectName.setText("");
             mTvLeader.setText("");

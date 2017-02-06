@@ -35,7 +35,7 @@
                 android:textColor="#000000"
                 android:textSize="25sp"/>
 
-            <android.support.v4.widget.CircleImageView
+            <ImageView
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"

@@ -69,7 +69,6 @@ import butterknife.OnClick;
 
 /**
  * create by Overdo in 2017/01/23
- *
  */
 public class MainActivity extends BaseActivity implements LocationSource, AMapLocationListener,
         GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
@@ -491,7 +490,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             String lat = mDesLatLng.getLatitude() + "";
             String lng = mDesLatLng.getLongitude() + "";
 
-            mTvLocationDetail.setText("lat/lng：(" + lat.substring(0, 9) + "," + lng.substring(0, 9)+")");
+            mTvLocationDetail.setText("lat/lng：(" + lat.substring(0, 9) + "," + lng.substring(0, 9) + ")");
         }
 
         return true;
