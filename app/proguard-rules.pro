@@ -44,3 +44,16 @@
 #导航
 -keep class com.amap.api.navi.**{*;}
 -keep class com.autonavi.**{*;}
+
+
+-dontwarn org.litepal.*
+-keep class org.litepal.** { *; }
+-keep enum org.litepal.**
+-keep interface org.litepal.** { *; }
+-keep public class * extends org.litepal.**
+-keepattributes *Annotation*
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+-keepclassmembers class * extends org.litepal.crud.DataSupport{*;}

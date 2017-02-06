@@ -3,7 +3,6 @@ package com.example.overdo.geoinfocollecter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -552,7 +551,12 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 intentToClass(ProjectManagerActivity.class);
                 break;
             case R.id.distribute:
-                dialogChooseShowWhitchProject();
+
+                try {
+                    dialogChooseShowWhitchProject();
+                } catch (Exception e) {
+                    showToast("点格式错误");
+                }
                 break;
             case R.id.layer:
                 dialogChooseLayer();
@@ -599,16 +603,20 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 //获取配置信息，添加marker
                 List<GeoInfo> list = getNeedAddMarKerProject();
 
-                for (int i = 0; i < list.size(); i++) {
+                try {
+                    for (int i = 0; i < list.size(); i++) {
 
-                    Log.d(TAG, "onClick: " + list.toString() + list.size());
-                    //添加marker
-                    mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                            .position(new LatLng(Double.valueOf(list.get(i).getLatitude()),
-                                    Double.valueOf((list.get(i).getLongtitude())))
-                            )).setTitle(list.get(i).getCode());
+                        Log.d(TAG, "onClick: " + list.toString() + list.size());
+                        //添加marker
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                .position(new LatLng(Double.valueOf(list.get(i).getLatitude()),
+                                        Double.valueOf((list.get(i).getLongtitude())))
+                                )).setTitle(list.get(i).getCode());
 
+                    }
+                } catch (NumberFormatException e) {
+                    showToast("格式错误");
                 }
             }
         });
@@ -717,15 +725,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    showToast("权限定位被拒绝，到权限设置界面设置");
-
-                } else {
-                    locateToCenter();
-                }
-                break;
-        }
     }
+
 }
