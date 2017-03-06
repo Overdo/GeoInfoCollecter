@@ -50,7 +50,7 @@
         </service>
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="9596b57cabcfb27aeac3d241eb4fcd1c">
+            android:value="b6acb90705f2742b547d2184c1ac5bba">
         </meta-data>
 
         <activity android:name=".MainActivity">

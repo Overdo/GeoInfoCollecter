@@ -231,6 +231,17 @@ public class PointDetailActivity extends BaseActivity {
             mProject.setLeader(projectLeader);
             mProject.setProjectname(projectname);
         }
+
+        /**
+         * 判断点号是否已经存在
+         */
+        List<GeoInfo> geoifIds = DataSupport.select("code").where("code = ?", code).find(GeoInfo.class);
+        if (!geoifIds.isEmpty()) {
+            showToast("点号" + code + "已存在,请更改点号");
+            return;
+        }
+
+
         //地理信息
         GeoInfo geoInfo = new GeoInfo();
         geoInfo.setLatitude(latitude);
@@ -260,9 +271,9 @@ public class PointDetailActivity extends BaseActivity {
     private void initProjectEditext() {
 
         if (mProjectData != null && !mProjectData.isEmpty()) {
-            mTvProjectName.setText(mProjectData.get(mProjectData.size()-1).getProjectname());
-            mTvLeader.setText(mProjectData.get(mProjectData.size()-1).getLeader());
-            mTvCollector.setText(mProjectData.get(mProjectData.size()-1).getCollector());
+            mTvProjectName.setText(mProjectData.get(mProjectData.size() - 1).getProjectname());
+            mTvLeader.setText(mProjectData.get(mProjectData.size() - 1).getLeader());
+            mTvCollector.setText(mProjectData.get(mProjectData.size() - 1).getCollector());
         } else {
             mTvProjectName.setText("");
             mTvLeader.setText("");

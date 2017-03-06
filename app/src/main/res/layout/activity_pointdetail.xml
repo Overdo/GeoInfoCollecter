@@ -171,7 +171,9 @@
                 android:id="@+id/tv_lat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:digits="@string/latlng_digits_type"
+                android:maxLength="20"/>
         </LinearLayout>
 
 
@@ -192,7 +194,9 @@
                 android:id="@+id/tv_lng"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:digits="@string/latlng_digits_type"
+                android:maxLength="20"/>
         </LinearLayout>
 
         <LinearLayout
@@ -214,6 +218,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
+                android:digits="@string/latlng_digits_type"
                 android:hint="0.0"/>
         </LinearLayout>
 

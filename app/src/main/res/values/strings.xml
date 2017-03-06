@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">地理信息采集助手</string>
     <string name="no_result">对不起，没有搜索到相关数据！</string>
+    <string name="latlng_digits_type">1234567890.</string>
 </resources>

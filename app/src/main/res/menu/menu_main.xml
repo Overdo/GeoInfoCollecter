@@ -24,6 +24,11 @@
         android:id="@+id/layer"
         android:title="图层"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/share"
+        android:title="分享"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/about"
         android:title="关于"

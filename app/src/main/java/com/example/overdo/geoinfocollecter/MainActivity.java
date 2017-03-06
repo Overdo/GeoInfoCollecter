@@ -561,6 +561,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case R.id.layer:
                 dialogChooseLayer();
                 break;
+
+            case R.id.share:
+
+                break;
+            
             case R.id.about:
                 intentToClass(AboutActivity.class);
                 break;
@@ -601,7 +606,16 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             public void onClick(DialogInterface dialog, int whitch) {
                 dialog.dismiss();
                 //获取配置信息，添加marker
-                List<GeoInfo> list = getNeedAddMarKerProject();
+                List<GeoInfo> list = getNeedAddMarKerPoint();
+
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                    }
+                }.start();
+
 
                 try {
                     for (int i = 0; i < list.size(); i++) {
@@ -636,7 +650,7 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
      *
      * @return
      */
-    private List getNeedAddMarKerProject() {
+    private List getNeedAddMarKerPoint() {
         List<Project> nlist = new ArrayList<Project>();
         for (int i = 0; i < mProjectList.size(); i++) {
             if (getSPConfig(mProjectList.get(i).getProjectname()).equals("show")) {
@@ -647,9 +661,11 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         List<GeoInfo> glist = new ArrayList<GeoInfo>();
         for (int i = 0; i < nlist.size(); i++) {
 
-            final List<GeoInfo> mlist = DataSupport.where("project_id = ?", nlist.get(i).getId() + "").find(GeoInfo.class);
+            List<GeoInfo> mlist = DataSupport.where("project_id = ?", nlist.get(i).getId() + "").find(GeoInfo.class);
             glist.addAll(mlist);
         }
+
+        Log.d(TAG, "getNeedAddMarKerPoint: " + glist);
 
         return glist;
     }
