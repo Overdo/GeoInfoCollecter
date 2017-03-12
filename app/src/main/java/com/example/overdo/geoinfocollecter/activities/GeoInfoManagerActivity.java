@@ -90,7 +90,7 @@ public class GeoInfoManagerActivity extends BaseActivity {
                 public void onclick(int position) {
                     Intent intent = new Intent(GeoInfoManagerActivity.this, PointDetailActivity.class);
                     intent.putExtra("geo_info", mlist.get(position));
-                    intent.putExtra("project_info",mPlist.get(0));
+                    intent.putExtra("project_info_from_manager",mPlist.get(0));
                     startActivity(intent);
                 }
 
@@ -107,6 +107,11 @@ public class GeoInfoManagerActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        intiView();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,7 +124,6 @@ public class GeoInfoManagerActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.add_point:
                 Intent intent = new Intent(GeoInfoManagerActivity.this, PointDetailActivity.class);
-
                 intent.putExtra("project_info",mPlist.get(0));
                 startActivity(intent);
                 break;

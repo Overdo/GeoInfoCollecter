@@ -74,6 +74,7 @@ public class PointDetailActivity extends BaseActivity {
     private Project mProject;
     private Project intentProjectData;
     private List<Project> mProjectData;
+    private Project mIntentManagerProjectData;
 
 
     @Override
@@ -108,6 +109,7 @@ public class PointDetailActivity extends BaseActivity {
         }
         intentGeoinfoData = (GeoInfo) intent.getSerializableExtra("geo_info");
         intentProjectData = (Project) intent.getSerializableExtra("project_info");
+        mIntentManagerProjectData = (Project) intent.getSerializableExtra("project_info_from_manager");
 
         mProjectData = DataSupport.findAll(Project.class);
 
@@ -193,6 +195,13 @@ public class PointDetailActivity extends BaseActivity {
                 .start(this, PhotoPicker.REQUEST_CODE);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        intentGeoinfoData = null;
+        intentProjectData = null;
+    }
+
     private void saveGeoInfos() {
 
         //获取信息
@@ -224,7 +233,6 @@ public class PointDetailActivity extends BaseActivity {
             mProject.setLeader(projectLeader);
             mProject.setProjectname(projectname);
 
-
         } else {
             mProject = projects.get(0);
             mProject.setCollector(projectCollefctor);
@@ -232,35 +240,64 @@ public class PointDetailActivity extends BaseActivity {
             mProject.setProjectname(projectname);
         }
 
-        /**
-         * 判断点号是否已经存在
-         */
-        List<GeoInfo> geoifIds = DataSupport.select("code").where("code = ?", code).find(GeoInfo.class);
-        if (!geoifIds.isEmpty()) {
-            showToast("点号" + code + "已存在,请更改点号");
-            return;
-        }
 
+        if (intentGeoinfoData != null && mIntentManagerProjectData != null) {
 
-        //地理信息
-        GeoInfo geoInfo = new GeoInfo();
-        geoInfo.setLatitude(latitude);
-        geoInfo.setAddress(location);
-        geoInfo.setLongtitude(longtitude);
-        geoInfo.setDate(date);
-        geoInfo.setCode(code);
-        geoInfo.setElevation(elevation);
-        geoInfo.setNote(note);
-        //图片信息 selectedPhotos
-        geoInfo.getPics().addAll(selectedPhotos);
-        geoInfo.save();
-        mProject.getGeoinfos().add(geoInfo);
-        mProject.saveThrows();
-        if (mProject.isSaved() && geoInfo.isSaved()) {
-            showToast("保存成功 ");
+            //判断点号是否已经存在
+            List<GeoInfo> geoifIds = DataSupport.select("code").where("code = ?", code).find(GeoInfo.class);
+            if (!geoifIds.isEmpty()) {
+                showToast("点号" + code + "已存在,请更改点号");
+                return;
+            }
+
+            //地理信息
+            GeoInfo geoInfo = new GeoInfo();
+            geoInfo.setLatitude(latitude);
+            geoInfo.setAddress(location);
+            geoInfo.setLongtitude(longtitude);
+            geoInfo.setDate(date);
+            geoInfo.setCode(code);
+            geoInfo.setElevation(elevation);
+            geoInfo.setNote(note);
+            //图片信息 selectedPhotos
+            geoInfo.getPics().addAll(selectedPhotos);
+            geoInfo.saveThrows();
+            geoInfo.update(intentGeoinfoData.getId());
+            if (geoInfo.isSaved()) {
+                showToast("修改成功 ");
+            } else {
+                showToast("修改失败 ");
+            }
         } else {
-            showToast("保存失败 ");
+
+            //判断点号是否已经存在
+            List<GeoInfo> geoifIds = DataSupport.select("code").where("code = ?", code).find(GeoInfo.class);
+            if (!geoifIds.isEmpty()) {
+                showToast("点号" + code + "已存在,请更改点号");
+                return;
+            }
+
+            //地理信息
+            GeoInfo geoInfo = new GeoInfo();
+            geoInfo.setLatitude(latitude);
+            geoInfo.setAddress(location);
+            geoInfo.setLongtitude(longtitude);
+            geoInfo.setDate(date);
+            geoInfo.setCode(code);
+            geoInfo.setElevation(elevation);
+            geoInfo.setNote(note);
+            //图片信息 selectedPhotos
+            geoInfo.getPics().addAll(selectedPhotos);
+            geoInfo.save();
+            mProject.getGeoinfos().add(geoInfo);
+            mProject.saveThrows();
+            if (mProject.isSaved() && geoInfo.isSaved()) {
+                showToast("保存成功 ");
+            } else {
+                showToast("保存失败 ");
+            }
         }
+
 
     }
 
@@ -279,10 +316,13 @@ public class PointDetailActivity extends BaseActivity {
             mTvLeader.setText("");
             mTvCollector.setText("");
         }
-        if (intentProjectData != null) {
-            mTvProjectName.setText(intentProjectData.getProjectname());
-            mTvLeader.setText(intentProjectData.getLeader());
-            mTvCollector.setText(intentProjectData.getCollector());
+        if (mIntentManagerProjectData != null) {
+            mTvProjectName.setText(mIntentManagerProjectData.getProjectname());
+            mTvProjectName.setEnabled(false);
+            mTvLeader.setText(mIntentManagerProjectData.getLeader());
+            mTvLeader.setEnabled(false);
+            mTvCollector.setText(mIntentManagerProjectData.getCollector());
+            mTvCollector.setEnabled(false);
         }
     }
 

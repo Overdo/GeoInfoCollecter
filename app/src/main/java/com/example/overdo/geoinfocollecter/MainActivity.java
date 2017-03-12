@@ -119,6 +119,8 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        getWindow().setBackgroundDrawable(null);
+
 
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);// 此方法必须重写
@@ -362,17 +364,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
-/*
-
-        //没有权限，申请权限
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-*/
-
         locateToCenter();
     }
 
@@ -551,7 +542,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
                 intentToClass(ProjectManagerActivity.class);
                 break;
             case R.id.distribute:
-
                 try {
                     dialogChooseShowWhitchProject();
                 } catch (Exception e) {
@@ -561,11 +551,6 @@ public class MainActivity extends BaseActivity implements LocationSource, AMapLo
             case R.id.layer:
                 dialogChooseLayer();
                 break;
-
-            case R.id.share:
-
-                break;
-            
             case R.id.about:
                 intentToClass(AboutActivity.class);
                 break;

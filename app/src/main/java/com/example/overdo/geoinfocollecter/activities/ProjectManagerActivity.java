@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -28,7 +31,7 @@ import butterknife.InjectView;
 /**
  * Created by Overdo on 2017/1/29.
  */
-public class ProjectManagerActivity extends BaseActivity{
+public class ProjectManagerActivity extends BaseActivity {
 
     @InjectView(R.id.lv_projects)
     ListView mLvProjects;
@@ -36,6 +39,7 @@ public class ProjectManagerActivity extends BaseActivity{
     TextView mTvNodata;
     private List<Project> mProjectList;
     private ProjectAdapter mAdapter;
+    private ProgressBar mProgress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,13 +48,13 @@ public class ProjectManagerActivity extends BaseActivity{
         ButterKnife.inject(this);
 
         initToolbar();
-        intiView();
+        initView();
     }
 
 
+    private void initView() {
 
-    private void intiView() {
-
+        mProgress = (ProgressBar) findViewById(R.id.progress);
         mProjectList = DataSupport.findAll(Project.class);
 
         if (mProjectList.isEmpty()) {
@@ -78,7 +82,7 @@ public class ProjectManagerActivity extends BaseActivity{
             mLvProjects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ((SwipeLayout)(mLvProjects.getChildAt(position - mLvProjects.getFirstVisiblePosition()))).open(true);
+                    ((SwipeLayout) (mLvProjects.getChildAt(position - mLvProjects.getFirstVisiblePosition()))).open(true);
                 }
             });
         }
@@ -123,4 +127,24 @@ public class ProjectManagerActivity extends BaseActivity{
         builder.show();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.output:
+                //后台导出同事显示进度条
+                //成功隐藏进度条同事吐司
+                mProgress.setVisibility(View.VISIBLE);
+
+
+                mProgress.setVisibility(View.GONE);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.geo_manager, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 }
