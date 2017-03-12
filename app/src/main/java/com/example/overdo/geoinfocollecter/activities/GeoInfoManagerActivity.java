@@ -115,7 +115,7 @@ public class GeoInfoManagerActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.geo_manager, menu);
+        getMenuInflater().inflate(R.menu.geoinfo_manager, menu);
         return true;
     }
 

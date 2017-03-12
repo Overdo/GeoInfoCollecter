@@ -41,4 +41,5 @@ dependencies {
     compile files('libs/AMap_Location_V3.3.0_20170118.jar')
     compile files('libs/AMap_Search_V4.0.0_20170111.jar')
     compile files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
+    compile files('libs/jxl.jar')
 }
