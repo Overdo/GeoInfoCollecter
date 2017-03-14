@@ -25,6 +25,7 @@ import com.example.overdo.geoinfocollecter.adapter.ProjectAdapter;
 import com.example.overdo.geoinfocollecter.db.GeoInfo;
 import com.example.overdo.geoinfocollecter.db.Project;
 import com.example.overdo.geoinfocollecter.listener.IOnItemClickListener;
+import com.example.overdo.geoinfocollecter.util.ToastUtil;
 
 import org.litepal.crud.DataSupport;
 
@@ -155,6 +156,11 @@ public class ProjectManagerActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.output:
+
+                if(mProjectList.isEmpty()){
+                    ToastUtil.show(getApplicationContext(),"没有可以导出的数据");
+                    return super.onOptionsItemSelected(item);
+                }
                 //后台导出同事显示进度条
                 //成功隐藏进度条同事吐司
                 mHandler = new Handler() {
