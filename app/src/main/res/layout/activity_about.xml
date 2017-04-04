@@ -80,6 +80,15 @@
         android:text="不会导航？长按地图试试"
         android:textColor="@color/gary"
         android:textSize="20sp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:gravity="center_horizontal"
+        android:text="定不了位？打开wifi看看"
+        android:textColor="@color/gary"
+        android:textSize="20sp"/>
 
 
 </LinearLayout>

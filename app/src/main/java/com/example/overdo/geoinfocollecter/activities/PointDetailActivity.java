@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.overdo.geoinfocollecter.R;
 import com.example.overdo.geoinfocollecter.adapter.PhotoAdapter;
@@ -40,7 +39,7 @@ import me.iwf.photopicker.PhotoPreview;
 public class PointDetailActivity extends BaseActivity {
 
     @InjectView(R.id.tv_date)
-    TextView mTvDate;
+    EditText mTvDate;
     @InjectView(R.id.tv_location)
     EditText mTvLocation;
     @InjectView(R.id.tv_lat)

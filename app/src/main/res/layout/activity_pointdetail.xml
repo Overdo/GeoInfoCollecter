@@ -27,7 +27,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="项目名称："
-                android:textSize="20sp"/>
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_weight="0.08"/>
 
             <EditText
                 android:id="@+id/tv_project_name"
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="项目负责人："
+                android:gravity="center"
                 android:textSize="20sp"/>
 
             <EditText
@@ -73,8 +76,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:gravity="center"
                 android:text="记录人："
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_weight="0.16"/>
 
             <EditText
                 android:id="@+id/tv_collector"
@@ -90,22 +95,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:layout_weight="2.56"
                 android:text="日期："
                 android:textSize="20sp"/>
 
-            <TextView
+
+            <EditText
                 android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="2017年1月28日"
-                android:textSize="20sp"/>
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:text=""
+                android:hint=""/>
 
         </LinearLayout>
 
@@ -120,7 +130,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_weight="2.56"
                 android:text="编号："
                 android:textSize="20sp"/>
 
@@ -145,7 +156,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="地理位置："
-                android:textSize="20sp"/>
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_weight="0.11"/>
 
             <EditText
                 android:id="@+id/tv_location"
@@ -164,8 +177,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:text="latitude："
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:layout_weight="0.17"/>
 
             <EditText
                 android:id="@+id/tv_lat"
@@ -188,7 +203,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="longtitude："
-                android:textSize="20sp"/>
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_weight="0.08"/>
 
             <EditText
                 android:id="@+id/tv_lng"
@@ -209,7 +226,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="2.66"
+                android:gravity="center"
                 android:text="高程："
                 android:textSize="20sp"/>
 
@@ -232,7 +250,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_weight="2.64"
+                android:gravity="center"
                 android:text="备注："
                 android:textSize="20sp"/>
 
